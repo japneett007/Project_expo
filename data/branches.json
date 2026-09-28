@@ -1,0 +1,10 @@
+[
+  { "id": "CSE", "name": "Computer Science Engineering", "shortName": "CSE" },
+  { "id": "CSE-AIML", "name": "CSE - AI & Machine Learning", "shortName": "CSE-AIML" },
+  { "id": "CSE-DS", "name": "CSE - Data Science", "shortName": "CSE-DS" },
+  { "id": "IT", "name": "Information Technology", "shortName": "IT" },
+  { "id": "ECE", "name": "Electronics & Communication Engineering", "shortName": "ECE" },
+  { "id": "EEE", "name": "Electrical & Electronics Engineering", "shortName": "EEE" },
+  { "id": "BCA", "name": "Bachelor of Computer Applications", "shortName": "BCA" },
+  { "id": "MCA", "name": "Master of Computer Applications", "shortName": "MCA" }
+]

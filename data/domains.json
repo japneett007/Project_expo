@@ -1,0 +1,66 @@
+[
+  {
+    "id": "web-development",
+    "name": "Web Development",
+    "icon": "🌐",
+    "description": "Build interactive websites and web applications using HTML, CSS, JavaScript and modern frameworks.",
+    "color": "#7B2CBF",
+    "projectCount": 10
+  },
+  {
+    "id": "python-development",
+    "name": "Python Development",
+    "icon": "🐍",
+    "description": "Create powerful applications, automation scripts, and APIs using Python and Flask.",
+    "color": "#3C096C",
+    "projectCount": 10
+  },
+  {
+    "id": "java-development",
+    "name": "Java Development",
+    "icon": "☕",
+    "description": "Build robust object-oriented applications and enterprise-grade systems with Java.",
+    "color": "#5A189A",
+    "projectCount": 10
+  },
+  {
+    "id": "ai-ml",
+    "name": "AI/ML",
+    "icon": "🤖",
+    "description": "Explore artificial intelligence and machine learning through hands-on prediction and classification projects.",
+    "color": "#9D4EDD",
+    "projectCount": 10
+  },
+  {
+    "id": "data-science",
+    "name": "Data Science",
+    "icon": "📊",
+    "description": "Analyze datasets, discover insights, and build predictive models with Python data tools.",
+    "color": "#C77DFF",
+    "projectCount": 10
+  },
+  {
+    "id": "data-analytics",
+    "name": "Data Analytics",
+    "icon": "📈",
+    "description": "Create dashboards, KPI reports, and business intelligence visualizations from real-world data.",
+    "color": "#E0AAFF",
+    "projectCount": 10
+  },
+  {
+    "id": "cybersecurity",
+    "name": "Cybersecurity",
+    "icon": "🔒",
+    "description": "Learn defensive security, vulnerability analysis, and secure application development.",
+    "color": "#240046",
+    "projectCount": 10
+  },
+  {
+    "id": "full-stack-development",
+    "name": "Full Stack Development",
+    "icon": "🚀",
+    "description": "Build complete applications combining frontend, backend, databases and deployment.",
+    "color": "#7B2CBF",
+    "projectCount": 10
+  }
+]

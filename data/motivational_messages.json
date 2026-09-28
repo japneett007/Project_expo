@@ -1,0 +1,25 @@
+{
+  "milestone_messages": [
+    "Another milestone down. You're one step closer to the final build. 🚀",
+    "You didn't just complete a step—you added another skill to your toolkit.",
+    "Keep going. The difficult part is often starting; you're already building.",
+    "One more piece of the project is yours. Keep building toward the bigger goal.",
+    "Progress isn't always visible, but every milestone counts. You're doing great.",
+    "That's another concept you now understand. Keep stacking knowledge.",
+    "Brick by brick, you're building something real. Don't stop now.",
+    "Every expert was once a beginner. You're proving that journey right now.",
+    "Milestone cleared. Your future self will thank you for this effort.",
+    "You're not just writing code—you're building experience."
+  ],
+  "project_complete_messages": [
+    "🎉 Project complete! You built something real from scratch. That's not easy—be proud.",
+    "🏆 You started with an idea and ended with a working project. That's what builders do.",
+    "🚀 From zero to shipped. You've earned every line of code in this project.",
+    "⭐ This isn't just a project—it's proof that you can build. Keep going.",
+    "💪 100% done. You pushed through every challenge and came out stronger."
+  ],
+  "streak_messages": [
+    "🔥 You've been building consistently. Momentum is everything.",
+    "📅 Another day, another step forward. Consistency beats intensity."
+  ]
+}

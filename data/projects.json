@@ -1,0 +1,809 @@
+[
+  {
+    "id": "web-001", "domain": "web-development", "title": "Personal Portfolio", "difficulty": "beginner", "level": 1,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","ECE","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript"],
+    "description": "Build a clean, responsive personal portfolio website showcasing your skills, projects and contact information.",
+    "whyBuildThis": "A portfolio is the first thing recruiters and hiring managers look at. Having a well-built portfolio immediately demonstrates your frontend skills and gives you a home base on the internet.",
+    "whatYouLearn": ["HTML5 semantic structure","CSS Flexbox and Grid layouts","Responsive design with media queries","Basic JavaScript interactivity","Web hosting fundamentals"],
+    "prerequisites": [], "estimatedHours": 8,
+    "milestoneIds": ["web-001-m01","web-001-m02","web-001-m03","web-001-m04","web-001-m05","web-001-m06"]
+  },
+  {
+    "id": "web-002", "domain": "web-development", "title": "Interactive To-Do List", "difficulty": "beginner", "level": 2,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript"],
+    "description": "Create a dynamic to-do list with add, delete, edit, filter and local storage persistence.",
+    "whyBuildThis": "DOM manipulation and event handling are foundational web development skills. A to-do app teaches you to manage application state in the browser — concepts used in every web app.",
+    "whatYouLearn": ["DOM manipulation","Event listeners and delegation","LocalStorage API","Dynamic UI rendering","CRUD operations in the browser"],
+    "prerequisites": ["web-001"], "estimatedHours": 10,
+    "milestoneIds": ["web-002-m01","web-002-m02","web-002-m03","web-002-m04","web-002-m05","web-002-m06"]
+  },
+  {
+    "id": "web-003", "domain": "web-development", "title": "Weather Dashboard", "difficulty": "beginner", "level": 3,
+    "type": "Academic Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","REST API"],
+    "description": "Build a weather dashboard that fetches real-time weather data from an API and displays it with dynamic UI.",
+    "whyBuildThis": "Modern web apps communicate with external services through APIs. Understanding fetch, promises, async/await and JSON parsing is essential for any web developer role.",
+    "whatYouLearn": ["Fetch API and promises","Async/await pattern","JSON parsing","Error handling for network requests","Dynamic data rendering"],
+    "prerequisites": ["web-002"], "estimatedHours": 12,
+    "milestoneIds": ["web-003-m01","web-003-m02","web-003-m03","web-003-m04","web-003-m05","web-003-m06","web-003-m07","web-003-m08"]
+  },
+  {
+    "id": "web-004", "domain": "web-development", "title": "Quiz Application", "difficulty": "intermediate", "level": 4,
+    "type": "Academic Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript"],
+    "description": "Create a multi-category quiz app with timers, scoring, progress tracking and dynamic question rendering.",
+    "whyBuildThis": "State management is one of the most important concepts in frontend development. A quiz app forces you to think about state transitions, validation logic and dynamic UI updates.",
+    "whatYouLearn": ["Application state management","Timer and interval functions","Form validation logic","Score calculation","Multi-step UI flows"],
+    "prerequisites": ["web-002"], "estimatedHours": 14,
+    "milestoneIds": ["web-004-m01","web-004-m02","web-004-m03","web-004-m04","web-004-m05","web-004-m06","web-004-m07"]
+  },
+  {
+    "id": "web-005", "domain": "web-development", "title": "Expense Tracker", "difficulty": "intermediate", "level": 5,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","Chart.js"],
+    "description": "Build a personal expense tracking app with categories, date filtering, charts and data persistence.",
+    "whyBuildThis": "Working with data visualization and filtering gives you real-world skills used in business dashboards and analytics applications. Chart.js is one of the most widely used charting libraries.",
+    "whatYouLearn": ["Data persistence patterns","Chart.js integration","Date filtering and sorting","Category management","Data aggregation and display"],
+    "prerequisites": ["web-003"], "estimatedHours": 18,
+    "milestoneIds": ["web-005-m01","web-005-m02","web-005-m03","web-005-m04","web-005-m05","web-005-m06","web-005-m07","web-005-m08"]
+  },
+  {
+    "id": "web-006", "domain": "web-development", "title": "Blog Platform", "difficulty": "advanced", "level": 6,
+    "type": "Portfolio Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","REST API"],
+    "description": "Build a blog platform with user authentication concepts, post creation, editing, deletion and content management.",
+    "whyBuildThis": "Blogs represent the classic CRUD application and teach you about content management systems, user authentication patterns, and structured data handling that form the basis of most web applications.",
+    "whatYouLearn": ["Authentication concepts","CRUD operations","Content management","Rich text editing","Search and filtering"],
+    "prerequisites": ["web-004","web-005"], "estimatedHours": 22,
+    "milestoneIds": ["web-006-m01","web-006-m02","web-006-m03","web-006-m04","web-006-m05","web-006-m06","web-006-m07","web-006-m08","web-006-m09"]
+  },
+  {
+    "id": "web-007", "domain": "web-development", "title": "Real-Time Chat Interface", "difficulty": "advanced", "level": 7,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","IT","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","WebSocket"],
+    "description": "Create a real-time chat interface with message history, online status and typing indicators.",
+    "whyBuildThis": "Real-time communication is used in countless modern applications. Understanding WebSocket architecture, event-driven patterns and real-time UI updates is a high-demand skill.",
+    "whatYouLearn": ["WebSocket communication","Real-time UI updates","Message queuing concepts","Online presence tracking","Event-driven architecture"],
+    "prerequisites": ["web-006"], "estimatedHours": 25,
+    "milestoneIds": ["web-007-m01","web-007-m02","web-007-m03","web-007-m04","web-007-m05","web-007-m06","web-007-m07","web-007-m08"]
+  },
+  {
+    "id": "web-008", "domain": "web-development", "title": "Job Application Tracker", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","REST API"],
+    "description": "Build a comprehensive job application tracking system with status workflows, search, filtering and analytics.",
+    "whyBuildThis": "Complex state management, multi-step workflows and data analytics come together in a practical tool you'll actually use during your job search.",
+    "whatYouLearn": ["Complex UI state management","Workflow/pipeline logic","Advanced filtering and search","Data analytics visualization","Responsive table and card layouts"],
+    "prerequisites": ["web-005","web-006"], "estimatedHours": 28,
+    "milestoneIds": ["web-008-m01","web-008-m02","web-008-m03","web-008-m04","web-008-m05","web-008-m06","web-008-m07","web-008-m08","web-008-m09"]
+  },
+  {
+    "id": "web-009", "domain": "web-development", "title": "Learning Management Portal", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","IT","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","REST API"],
+    "description": "Create a learning management system with students, courses, modules, progress tracking and content delivery.",
+    "whyBuildThis": "LMS platforms demonstrate complex entity relationships and progress tracking — key patterns in enterprise applications. This is directly relevant to ed-tech companies.",
+    "whatYouLearn": ["Complex entity relationships","Progress tracking systems","Content organization","Role-based views","Module and lesson management"],
+    "prerequisites": ["web-006","web-008"], "estimatedHours": 35,
+    "milestoneIds": ["web-009-m01","web-009-m02","web-009-m03","web-009-m04","web-009-m05","web-009-m06","web-009-m07","web-009-m08","web-009-m09","web-009-m10"]
+  },
+  {
+    "id": "web-010", "domain": "web-development", "title": "Project Management Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","REST API","WebSocket"],
+    "description": "Build a full project management platform with authentication, tasks, dashboards, team collaboration and real-time updates.",
+    "whyBuildThis": "This capstone brings together everything — authentication, complex CRUD, real-time updates, dashboards, collaboration. It's a portfolio centerpiece demonstrating full web development mastery.",
+    "whatYouLearn": ["Full application architecture","Authentication and authorization","Real-time collaboration","Dashboard analytics","Team and project management"],
+    "prerequisites": ["web-007","web-009"], "estimatedHours": 45,
+    "milestoneIds": ["web-010-m01","web-010-m02","web-010-m03","web-010-m04","web-010-m05","web-010-m06","web-010-m07","web-010-m08","web-010-m09","web-010-m10","web-010-m11","web-010-m12"]
+  },
+
+  {
+    "id": "py-001", "domain": "python-development", "title": "CLI Calculator", "difficulty": "beginner", "level": 1,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","ECE","EEE","BCA","MCA"],
+    "technologies": ["Python"],
+    "description": "Build a command-line calculator supporting basic and scientific operations with error handling.",
+    "whyBuildThis": "A calculator teaches the fundamentals — variables, functions, input/output and error handling — in a small, achievable scope that builds confidence.",
+    "whatYouLearn": ["Python variables and data types","Functions and parameters","Input/output handling","Error handling with try/except","Control flow logic"],
+    "prerequisites": [], "estimatedHours": 6,
+    "milestoneIds": ["py-001-m01","py-001-m02","py-001-m03","py-001-m04","py-001-m05"]
+  },
+  {
+    "id": "py-002", "domain": "python-development", "title": "File Organizer", "difficulty": "beginner", "level": 2,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python"],
+    "description": "Create an automated file organizer that sorts files by extension into categorized folders.",
+    "whyBuildThis": "Automation is Python's superpower. Understanding filesystem operations opens the door to scripting, DevOps and system administration tasks.",
+    "whatYouLearn": ["File system operations (os, shutil)","Path handling with pathlib","Directory traversal","File extension matching","Automation scripting patterns"],
+    "prerequisites": ["py-001"], "estimatedHours": 8,
+    "milestoneIds": ["py-002-m01","py-002-m02","py-002-m03","py-002-m04","py-002-m05","py-002-m06"]
+  },
+  {
+    "id": "py-003", "domain": "python-development", "title": "Password Generator", "difficulty": "beginner", "level": 3,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","IT","BCA","MCA"],
+    "technologies": ["Python"],
+    "description": "Build a configurable password generator with strength validation and secure randomization.",
+    "whyBuildThis": "Understanding randomization, validation logic and security concepts is essential. This project introduces string manipulation and security awareness.",
+    "whatYouLearn": ["Random module and secrets module","String manipulation","Validation logic","Security concepts","Command-line argument parsing"],
+    "prerequisites": ["py-001"], "estimatedHours": 7,
+    "milestoneIds": ["py-003-m01","py-003-m02","py-003-m03","py-003-m04","py-003-m05"]
+  },
+  {
+    "id": "py-004", "domain": "python-development", "title": "Expense Manager", "difficulty": "intermediate", "level": 4,
+    "type": "Academic Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","JSON"],
+    "description": "Create an expense management system with categories, JSON persistence, reporting and budget tracking.",
+    "whyBuildThis": "CRUD operations with JSON persistence teach you data modeling, file I/O patterns and structured data handling — the building blocks for any data-driven application.",
+    "whatYouLearn": ["JSON file read/write","CRUD operations in Python","Data filtering and reporting","Date and category management","Structured data modeling"],
+    "prerequisites": ["py-002"], "estimatedHours": 12,
+    "milestoneIds": ["py-004-m01","py-004-m02","py-004-m03","py-004-m04","py-004-m05","py-004-m06","py-004-m07"]
+  },
+  {
+    "id": "py-005", "domain": "python-development", "title": "Web Scraping Utility", "difficulty": "intermediate", "level": 5,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["Python","BeautifulSoup","Requests"],
+    "description": "Build a web scraping tool that extracts structured data from websites and exports to CSV/JSON.",
+    "whyBuildThis": "Web scraping is one of the most practical Python skills. Data collection from web sources is used in research, market analysis and data science pipelines.",
+    "whatYouLearn": ["HTTP requests with requests library","HTML parsing with BeautifulSoup","CSS selectors and element traversal","Data extraction and structuring","CSV/JSON export"],
+    "prerequisites": ["py-004"], "estimatedHours": 14,
+    "milestoneIds": ["py-005-m01","py-005-m02","py-005-m03","py-005-m04","py-005-m05","py-005-m06","py-005-m07"]
+  },
+  {
+    "id": "py-006", "domain": "python-development", "title": "REST API with Flask", "difficulty": "intermediate", "level": 6,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","IT","BCA","MCA"],
+    "technologies": ["Python","Flask","JSON"],
+    "description": "Build a RESTful API with Flask supporting CRUD operations, validation and proper HTTP responses.",
+    "whyBuildThis": "APIs are the backbone of modern software. Understanding how to build, document and test APIs is an essential backend development skill used in every company.",
+    "whatYouLearn": ["Flask routing and blueprints","HTTP methods (GET, POST, PUT, DELETE)","Request/response handling","JSON API design","Error handling and status codes"],
+    "prerequisites": ["py-004"], "estimatedHours": 16,
+    "milestoneIds": ["py-006-m01","py-006-m02","py-006-m03","py-006-m04","py-006-m05","py-006-m06","py-006-m07","py-006-m08"]
+  },
+  {
+    "id": "py-007", "domain": "python-development", "title": "Authentication Service", "difficulty": "advanced", "level": 7,
+    "type": "Industry-style Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","Flask","JWT","bcrypt"],
+    "description": "Build a secure authentication service with registration, login, JWT tokens and password hashing.",
+    "whyBuildThis": "Authentication is the most security-critical component of any application. Understanding password hashing, token management and session security is essential for any developer.",
+    "whatYouLearn": ["Password hashing with bcrypt","JWT token generation and validation","Session management","Input validation and sanitization","Security best practices"],
+    "prerequisites": ["py-006"], "estimatedHours": 18,
+    "milestoneIds": ["py-007-m01","py-007-m02","py-007-m03","py-007-m04","py-007-m05","py-007-m06","py-007-m07","py-007-m08"]
+  },
+  {
+    "id": "py-008", "domain": "python-development", "title": "Automation Dashboard", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","IT","MCA"],
+    "technologies": ["Python","Flask","HTML","CSS","JavaScript"],
+    "description": "Create a web dashboard that triggers and monitors Python automation scripts.",
+    "whyBuildThis": "Combining Python automation with a web interface creates internal tools — exactly what companies need. This teaches you full-stack thinking with Python at the core.",
+    "whatYouLearn": ["Flask web application development","Frontend-backend integration","Task scheduling concepts","Real-time status updates","Dashboard UI patterns"],
+    "prerequisites": ["py-006","py-007"], "estimatedHours": 24,
+    "milestoneIds": ["py-008-m01","py-008-m02","py-008-m03","py-008-m04","py-008-m05","py-008-m06","py-008-m07","py-008-m08","py-008-m09"]
+  },
+  {
+    "id": "py-009", "domain": "python-development", "title": "Document Processing System", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["Python","Flask"],
+    "description": "Build a document processing pipeline for text extraction, analysis and structured output generation.",
+    "whyBuildThis": "Document processing is a core enterprise need. Understanding file handling, text extraction, NLP basics and pipeline architecture opens doors to enterprise and AI/ML roles.",
+    "whatYouLearn": ["File handling for multiple formats","Text extraction and processing","Pipeline architecture","Structured data output","Error handling in data pipelines"],
+    "prerequisites": ["py-005","py-008"], "estimatedHours": 30,
+    "milestoneIds": ["py-009-m01","py-009-m02","py-009-m03","py-009-m04","py-009-m05","py-009-m06","py-009-m07","py-009-m08","py-009-m09","py-009-m10"]
+  },
+  {
+    "id": "py-010", "domain": "python-development", "title": "Full Python Productivity Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["Python","Flask","JSON","HTML","CSS","JavaScript"],
+    "description": "Build a comprehensive productivity platform combining Flask APIs, authentication, automation, dashboards and document processing.",
+    "whyBuildThis": "This capstone combines every Python skill — APIs, auth, automation, data processing and a web frontend. It demonstrates full-stack Python mastery in one portfolio-worthy project.",
+    "whatYouLearn": ["Full application architecture","Multi-module Python projects","Authentication and authorization","Dashboard and analytics","Deployment and documentation"],
+    "prerequisites": ["py-007","py-009"], "estimatedHours": 45,
+    "milestoneIds": ["py-010-m01","py-010-m02","py-010-m03","py-010-m04","py-010-m05","py-010-m06","py-010-m07","py-010-m08","py-010-m09","py-010-m10","py-010-m11","py-010-m12"]
+  },
+
+  {
+    "id": "java-001", "domain": "java-development", "title": "Student Grade Calculator", "difficulty": "beginner", "level": 1,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","ECE","EEE","BCA","MCA"],
+    "technologies": ["Java"],
+    "description": "Build a student grade calculator that computes GPA, CGPA, handles multiple subjects and generates grade reports.",
+    "whyBuildThis": "Grade calculators teach core Java fundamentals — variables, conditions, methods and arrays — in a relatable academic context every student understands.",
+    "whatYouLearn": ["Java variables and data types","Conditional statements","Methods and parameters","Arrays and loops","Input/output with Scanner"],
+    "prerequisites": [], "estimatedHours": 6,
+    "milestoneIds": ["java-001-m01","java-001-m02","java-001-m03","java-001-m04","java-001-m05"]
+  },
+  {
+    "id": "java-002", "domain": "java-development", "title": "Banking CLI", "difficulty": "beginner", "level": 2,
+    "type": "Academic Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["Java"],
+    "description": "Create a CLI banking application with account creation, deposits, withdrawals and balance checking using OOP.",
+    "whyBuildThis": "Banking apps are the classic OOP teaching tool because they naturally model real-world objects (accounts, transactions) with encapsulation and state management.",
+    "whatYouLearn": ["Classes and objects","Encapsulation","Constructor patterns","Method design","Basic data structures"],
+    "prerequisites": ["java-001"], "estimatedHours": 10,
+    "milestoneIds": ["java-002-m01","java-002-m02","java-002-m03","java-002-m04","java-002-m05","java-002-m06"]
+  },
+  {
+    "id": "java-003", "domain": "java-development", "title": "Library Management System", "difficulty": "beginner", "level": 3,
+    "type": "Academic Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["Java"],
+    "description": "Build a library management system with book catalog, member management, borrowing/returning and search.",
+    "whyBuildThis": "Library systems teach OOP principles in depth — inheritance, polymorphism, collections — while managing real entity relationships.",
+    "whatYouLearn": ["OOP principles (inheritance, polymorphism)","Java Collections (ArrayList, HashMap)","CRUD operations","Search and filter logic","Entity relationships"],
+    "prerequisites": ["java-002"], "estimatedHours": 14,
+    "milestoneIds": ["java-003-m01","java-003-m02","java-003-m03","java-003-m04","java-003-m05","java-003-m06","java-003-m07"]
+  },
+  {
+    "id": "java-004", "domain": "java-development", "title": "Student Management System", "difficulty": "intermediate", "level": 4,
+    "type": "Academic Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["Java"],
+    "description": "Create a comprehensive student management system with enrollment, courses, grades, attendance and reporting.",
+    "whyBuildThis": "Managing multiple entity types with complex relationships teaches you data structure design and validation patterns used in enterprise applications.",
+    "whatYouLearn": ["Complex data structures","Input validation patterns","Multi-entity management","Report generation","File-based persistence"],
+    "prerequisites": ["java-003"], "estimatedHours": 16,
+    "milestoneIds": ["java-004-m01","java-004-m02","java-004-m03","java-004-m04","java-004-m05","java-004-m06","java-004-m07"]
+  },
+  {
+    "id": "java-005", "domain": "java-development", "title": "Inventory Management System", "difficulty": "intermediate", "level": 5,
+    "type": "Academic Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["Java"],
+    "description": "Build an inventory system with products, categories, stock management, ordering and business logic.",
+    "whyBuildThis": "Inventory management teaches object relationships, business rules enforcement and data integrity — patterns used in e-commerce, retail and supply chain software.",
+    "whatYouLearn": ["Object relationships","Business logic implementation","Stock management algorithms","Category hierarchies","Transaction management"],
+    "prerequisites": ["java-003"], "estimatedHours": 18,
+    "milestoneIds": ["java-005-m01","java-005-m02","java-005-m03","java-005-m04","java-005-m05","java-005-m06","java-005-m07","java-005-m08"]
+  },
+  {
+    "id": "java-006", "domain": "java-development", "title": "Employee Management System", "difficulty": "advanced", "level": 6,
+    "type": "Portfolio Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Java"],
+    "description": "Create a layered employee management application with departments, roles, payroll calculation and reporting.",
+    "whyBuildThis": "Layered application design separating presentation, business and data layers is how enterprise Java applications are structured.",
+    "whatYouLearn": ["Layered architecture pattern","Department/employee relationships","Payroll business logic","Design patterns","Code organization"],
+    "prerequisites": ["java-004","java-005"], "estimatedHours": 22,
+    "milestoneIds": ["java-006-m01","java-006-m02","java-006-m03","java-006-m04","java-006-m05","java-006-m06","java-006-m07","java-006-m08"]
+  },
+  {
+    "id": "java-007", "domain": "java-development", "title": "Banking Management Application", "difficulty": "advanced", "level": 7,
+    "type": "Industry-style Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Java"],
+    "description": "Build a full banking application with account types, transactions, authentication, validation and audit logging.",
+    "whyBuildThis": "Banking applications require strict validation, security, transaction integrity and audit trails — skills directly applicable to fintech and enterprise development.",
+    "whatYouLearn": ["Authentication patterns","Transaction processing","Validation frameworks","Audit logging","Exception handling strategies"],
+    "prerequisites": ["java-006"], "estimatedHours": 25,
+    "milestoneIds": ["java-007-m01","java-007-m02","java-007-m03","java-007-m04","java-007-m05","java-007-m06","java-007-m07","java-007-m08"]
+  },
+  {
+    "id": "java-008", "domain": "java-development", "title": "Online Examination System", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["Java"],
+    "description": "Create an examination system with question banks, timed tests, auto-scoring, results and user management.",
+    "whyBuildThis": "Exam systems combine user management, time-sensitive operations, scoring algorithms and role-based access — a comprehensive application design challenge.",
+    "whatYouLearn": ["Timer-based operations","Scoring algorithms","Question bank management","Role-based access control","Results and analytics"],
+    "prerequisites": ["java-006"], "estimatedHours": 28,
+    "milestoneIds": ["java-008-m01","java-008-m02","java-008-m03","java-008-m04","java-008-m05","java-008-m06","java-008-m07","java-008-m08","java-008-m09"]
+  },
+  {
+    "id": "java-009", "domain": "java-development", "title": "Hospital Management System", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Java"],
+    "description": "Build a hospital management system with patients, doctors, appointments, billing and medical records.",
+    "whyBuildThis": "Healthcare systems involve multiple entities, complex workflows and data sensitivity — teaching you to design systems where correctness and reliability are critical.",
+    "whatYouLearn": ["Complex entity modeling","Appointment scheduling","Medical record management","Billing and invoicing","Multi-entity workflows"],
+    "prerequisites": ["java-007","java-008"], "estimatedHours": 35,
+    "milestoneIds": ["java-009-m01","java-009-m02","java-009-m03","java-009-m04","java-009-m05","java-009-m06","java-009-m07","java-009-m08","java-009-m09","java-009-m10"]
+  },
+  {
+    "id": "java-010", "domain": "java-development", "title": "Enterprise Management Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Java"],
+    "description": "Build a large-scale enterprise management platform combining HR, inventory, projects, reporting and modular architecture.",
+    "whyBuildThis": "This capstone demonstrates your ability to architect and build large, modular Java applications — exactly what enterprise employers look for.",
+    "whatYouLearn": ["Large-scale architecture","Module decomposition","Cross-module integration","Enterprise design patterns","Documentation and testing"],
+    "prerequisites": ["java-007","java-009"], "estimatedHours": 50,
+    "milestoneIds": ["java-010-m01","java-010-m02","java-010-m03","java-010-m04","java-010-m05","java-010-m06","java-010-m07","java-010-m08","java-010-m09","java-010-m10","java-010-m11","java-010-m12"]
+  },
+
+  {
+    "id": "aiml-001", "domain": "ai-ml", "title": "Iris Classification", "difficulty": "beginner", "level": 1,
+    "type": "Academic Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["Python","scikit-learn","pandas"],
+    "description": "Build your first ML model to classify iris flowers using features like petal length and width.",
+    "whyBuildThis": "Iris classification is the 'Hello World' of machine learning. It teaches you the full ML workflow — data loading, exploration, training and evaluation — in the simplest possible context.",
+    "whatYouLearn": ["Datasets, features and labels","Train/test split","Classification algorithms","Model accuracy evaluation","scikit-learn basics"],
+    "prerequisites": [], "estimatedHours": 8,
+    "milestoneIds": ["aiml-001-m01","aiml-001-m02","aiml-001-m03","aiml-001-m04","aiml-001-m05","aiml-001-m06"]
+  },
+  {
+    "id": "aiml-002", "domain": "ai-ml", "title": "House Price Prediction", "difficulty": "beginner", "level": 2,
+    "type": "Academic Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","scikit-learn","pandas","matplotlib"],
+    "description": "Predict house prices using regression models with feature analysis and visualization.",
+    "whyBuildThis": "Regression is the second fundamental ML concept. Predicting continuous values teaches you feature importance, model evaluation metrics (RMSE, R²) and data visualization.",
+    "whatYouLearn": ["Linear regression fundamentals","Feature analysis and selection","Regression evaluation metrics","Data visualization with matplotlib","Feature scaling"],
+    "prerequisites": ["aiml-001"], "estimatedHours": 10,
+    "milestoneIds": ["aiml-002-m01","aiml-002-m02","aiml-002-m03","aiml-002-m04","aiml-002-m05","aiml-002-m06"]
+  },
+  {
+    "id": "aiml-003", "domain": "ai-ml", "title": "Student Performance Predictor", "difficulty": "beginner", "level": 3,
+    "type": "Academic Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["Python","scikit-learn","pandas"],
+    "description": "Predict student academic performance based on study habits, demographics and background features.",
+    "whyBuildThis": "This project teaches data preprocessing and model evaluation — critical skills that separate toy ML projects from real-world applications.",
+    "whatYouLearn": ["Data preprocessing","Handling missing values","Model evaluation and comparison","Feature engineering basics","Cross-validation"],
+    "prerequisites": ["aiml-002"], "estimatedHours": 12,
+    "milestoneIds": ["aiml-003-m01","aiml-003-m02","aiml-003-m03","aiml-003-m04","aiml-003-m05","aiml-003-m06","aiml-003-m07"]
+  },
+  {
+    "id": "aiml-004", "domain": "ai-ml", "title": "Spam Message Detector", "difficulty": "intermediate", "level": 4,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","scikit-learn","NLTK"],
+    "description": "Build a text classification model to detect spam messages using NLP techniques.",
+    "whyBuildThis": "Text classification is one of the most common ML applications in industry — from spam filters to sentiment analysis to content moderation.",
+    "whatYouLearn": ["Text preprocessing (tokenization, stemming)","TF-IDF vectorization","Naive Bayes classification","Confusion matrix analysis","NLP pipeline"],
+    "prerequisites": ["aiml-003"], "estimatedHours": 14,
+    "milestoneIds": ["aiml-004-m01","aiml-004-m02","aiml-004-m03","aiml-004-m04","aiml-004-m05","aiml-004-m06","aiml-004-m07"]
+  },
+  {
+    "id": "aiml-005", "domain": "ai-ml", "title": "Customer Churn Predictor", "difficulty": "intermediate", "level": 5,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","scikit-learn","pandas","seaborn"],
+    "description": "Predict which customers are likely to leave using feature engineering and classification models.",
+    "whyBuildThis": "Churn prediction is a multi-billion dollar business problem. This teaches you feature engineering and model selection for imbalanced datasets — a real-world ML challenge.",
+    "whatYouLearn": ["Feature engineering","Handling imbalanced data","Multiple model comparison","ROC curves and AUC","Business metric interpretation"],
+    "prerequisites": ["aiml-003"], "estimatedHours": 16,
+    "milestoneIds": ["aiml-005-m01","aiml-005-m02","aiml-005-m03","aiml-005-m04","aiml-005-m05","aiml-005-m06","aiml-005-m07","aiml-005-m08"]
+  },
+  {
+    "id": "aiml-006", "domain": "ai-ml", "title": "Recommendation System", "difficulty": "intermediate", "level": 6,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","scikit-learn","pandas"],
+    "description": "Build a recommendation engine using collaborative and content-based filtering approaches.",
+    "whyBuildThis": "Recommendation systems power Netflix, Spotify, Amazon and YouTube. Understanding similarity measures and recommendation logic is a high-value ML skill.",
+    "whatYouLearn": ["Similarity measures (cosine, Euclidean)","Collaborative filtering","Content-based filtering","User-item matrices","Recommendation evaluation"],
+    "prerequisites": ["aiml-005"], "estimatedHours": 18,
+    "milestoneIds": ["aiml-006-m01","aiml-006-m02","aiml-006-m03","aiml-006-m04","aiml-006-m05","aiml-006-m06","aiml-006-m07","aiml-006-m08"]
+  },
+  {
+    "id": "aiml-007", "domain": "ai-ml", "title": "Sentiment Analysis", "difficulty": "advanced", "level": 7,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","scikit-learn","NLTK","pandas"],
+    "description": "Analyze sentiment in product reviews using advanced NLP preprocessing and classification.",
+    "whyBuildThis": "Sentiment analysis is used by every major brand to understand customer feedback. This deepens your NLP skills with real-world text data challenges.",
+    "whatYouLearn": ["Advanced text preprocessing","Word embeddings concepts","Multiple NLP techniques","Sentiment scoring","Model performance optimization"],
+    "prerequisites": ["aiml-004","aiml-006"], "estimatedHours": 22,
+    "milestoneIds": ["aiml-007-m01","aiml-007-m02","aiml-007-m03","aiml-007-m04","aiml-007-m05","aiml-007-m06","aiml-007-m07","aiml-007-m08"]
+  },
+  {
+    "id": "aiml-008", "domain": "ai-ml", "title": "Resume Analyzer", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","scikit-learn","NLTK","Flask"],
+    "description": "Build an AI-powered resume analyzer that extracts skills, matches job descriptions and provides improvement suggestions.",
+    "whyBuildThis": "Combining NLP with practical HR-tech creates a portfolio project that demonstrates both AI skills and product thinking.",
+    "whatYouLearn": ["Text extraction from documents","Named entity recognition concepts","Similarity matching","Structured analysis pipeline","Flask API for ML models"],
+    "prerequisites": ["aiml-007"], "estimatedHours": 25,
+    "milestoneIds": ["aiml-008-m01","aiml-008-m02","aiml-008-m03","aiml-008-m04","aiml-008-m05","aiml-008-m06","aiml-008-m07","aiml-008-m08","aiml-008-m09"]
+  },
+  {
+    "id": "aiml-009", "domain": "ai-ml", "title": "Image Classification System", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","TensorFlow","Keras","OpenCV"],
+    "description": "Build an image classification system using deep learning for real-world object recognition.",
+    "whyBuildThis": "Computer vision is one of the fastest-growing AI fields. Understanding CNN architectures, image preprocessing and model inference opens doors to CV roles.",
+    "whatYouLearn": ["Convolutional Neural Networks","Image preprocessing and augmentation","Transfer learning","Model training and evaluation","Computer vision fundamentals"],
+    "prerequisites": ["aiml-005","aiml-008"], "estimatedHours": 30,
+    "milestoneIds": ["aiml-009-m01","aiml-009-m02","aiml-009-m03","aiml-009-m04","aiml-009-m05","aiml-009-m06","aiml-009-m07","aiml-009-m08","aiml-009-m09","aiml-009-m10"]
+  },
+  {
+    "id": "aiml-010", "domain": "ai-ml", "title": "End-to-End AI Prediction Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","Flask","scikit-learn","TensorFlow","HTML","CSS","JavaScript"],
+    "description": "Build a complete AI platform: data ingestion → model training → API serving → web frontend → prediction → deployment.",
+    "whyBuildThis": "This capstone demonstrates the complete ML engineering lifecycle. Most ML work in industry is about building production systems, not just training models.",
+    "whatYouLearn": ["ML pipeline architecture","Model serving via API","Frontend for ML predictions","Model monitoring","End-to-end deployment"],
+    "prerequisites": ["aiml-008","aiml-009"], "estimatedHours": 50,
+    "milestoneIds": ["aiml-010-m01","aiml-010-m02","aiml-010-m03","aiml-010-m04","aiml-010-m05","aiml-010-m06","aiml-010-m07","aiml-010-m08","aiml-010-m09","aiml-010-m10","aiml-010-m11","aiml-010-m12"]
+  },
+
+  {
+    "id": "ds-001", "domain": "data-science", "title": "Dataset Explorer", "difficulty": "beginner", "level": 1,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","pandas","matplotlib"],
+    "description": "Build a tool to load, explore and visualize datasets — understanding shape, types, distributions and correlations.",
+    "whyBuildThis": "Data exploration is always the first step in any data project. Mastering pandas and matplotlib gives you the foundation for all data science work.",
+    "whatYouLearn": ["pandas DataFrame operations","Data types and summary statistics","Histogram and scatter plot creation","Missing value detection","Basic data profiling"],
+    "prerequisites": [], "estimatedHours": 8,
+    "milestoneIds": ["ds-001-m01","ds-001-m02","ds-001-m03","ds-001-m04","ds-001-m05","ds-001-m06"]
+  },
+  {
+    "id": "ds-002", "domain": "data-science", "title": "Sales Analysis", "difficulty": "beginner", "level": 2,
+    "type": "Academic Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","pandas","matplotlib","seaborn"],
+    "description": "Analyze a sales dataset to find trends, top products, seasonal patterns and revenue insights.",
+    "whyBuildThis": "Sales analysis is one of the most common real-world data tasks. Learning to clean messy data and extract business insights is immediately valuable.",
+    "whatYouLearn": ["Data cleaning techniques","Descriptive statistics","Groupby aggregations","Time-series basics","Business insight extraction"],
+    "prerequisites": ["ds-001"], "estimatedHours": 10,
+    "milestoneIds": ["ds-002-m01","ds-002-m02","ds-002-m03","ds-002-m04","ds-002-m05","ds-002-m06"]
+  },
+  {
+    "id": "ds-003", "domain": "data-science", "title": "Customer Analysis", "difficulty": "beginner", "level": 3,
+    "type": "Academic Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","scikit-learn","seaborn"],
+    "description": "Segment customers based on purchasing behavior using clustering and visualization techniques.",
+    "whyBuildThis": "Customer segmentation drives marketing strategy at every company. Understanding clustering teaches unsupervised learning fundamentals.",
+    "whatYouLearn": ["Customer segmentation concepts","K-Means clustering","Feature scaling","Cluster visualization","Business interpretation of segments"],
+    "prerequisites": ["ds-002"], "estimatedHours": 12,
+    "milestoneIds": ["ds-003-m01","ds-003-m02","ds-003-m03","ds-003-m04","ds-003-m05","ds-003-m06","ds-003-m07"]
+  },
+  {
+    "id": "ds-004", "domain": "data-science", "title": "Retail Data Analysis", "difficulty": "intermediate", "level": 4,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","IT","MCA"],
+    "technologies": ["Python","pandas","matplotlib","seaborn"],
+    "description": "Perform comprehensive retail analysis covering trends, distributions, product performance and store comparisons.",
+    "whyBuildThis": "Retail analytics requires working with large, multi-dimensional datasets — teaching you real data wrangling and visualization skills.",
+    "whatYouLearn": ["Multi-dimensional analysis","Trend and seasonality detection","Distribution analysis","Comparative analysis","Advanced visualization"],
+    "prerequisites": ["ds-002"], "estimatedHours": 14,
+    "milestoneIds": ["ds-004-m01","ds-004-m02","ds-004-m03","ds-004-m04","ds-004-m05","ds-004-m06","ds-004-m07"]
+  },
+  {
+    "id": "ds-005", "domain": "data-science", "title": "Student Performance Analysis", "difficulty": "intermediate", "level": 5,
+    "type": "Academic Project", "branches": ["CSE","CSE-AIML","CSE-DS","IT","MCA"],
+    "technologies": ["Python","pandas","scikit-learn","seaborn"],
+    "description": "Analyze student academic data to find correlations between study habits, demographics and performance outcomes.",
+    "whyBuildThis": "Correlation analysis and exploratory data analysis (EDA) are the core of data science. This project teaches you to find patterns and tell data stories.",
+    "whatYouLearn": ["Correlation analysis","Exploratory data analysis (EDA)","Hypothesis formulation","Statistical testing basics","Data storytelling"],
+    "prerequisites": ["ds-003"], "estimatedHours": 14,
+    "milestoneIds": ["ds-005-m01","ds-005-m02","ds-005-m03","ds-005-m04","ds-005-m05","ds-005-m06","ds-005-m07"]
+  },
+  {
+    "id": "ds-006", "domain": "data-science", "title": "Customer Churn Analysis", "difficulty": "intermediate", "level": 6,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","scikit-learn","matplotlib"],
+    "description": "Analyze customer churn data to identify risk factors and build a predictive model.",
+    "whyBuildThis": "Churn analysis combines data science with business impact. You'll learn to prepare data for modeling and interpret results for business decisions.",
+    "whatYouLearn": ["Data preparation for modeling","Feature importance analysis","Predictive modeling","Business metric calculation","Actionable insight generation"],
+    "prerequisites": ["ds-005"], "estimatedHours": 18,
+    "milestoneIds": ["ds-006-m01","ds-006-m02","ds-006-m03","ds-006-m04","ds-006-m05","ds-006-m06","ds-006-m07","ds-006-m08"]
+  },
+  {
+    "id": "ds-007", "domain": "data-science", "title": "E-Commerce Analytics", "difficulty": "advanced", "level": 7,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-DS","IT","MCA"],
+    "technologies": ["Python","pandas","scikit-learn","seaborn","matplotlib"],
+    "description": "Perform comprehensive e-commerce analytics with multiple datasets, business questions and strategic recommendations.",
+    "whyBuildThis": "E-commerce analytics involves joining multiple datasets, complex aggregations and translating data into business strategy — exactly what data scientists do daily.",
+    "whatYouLearn": ["Multi-dataset analysis","Complex joins and aggregations","Business question framing","Strategic recommendations","Advanced data visualization"],
+    "prerequisites": ["ds-004","ds-006"], "estimatedHours": 22,
+    "milestoneIds": ["ds-007-m01","ds-007-m02","ds-007-m03","ds-007-m04","ds-007-m05","ds-007-m06","ds-007-m07","ds-007-m08"]
+  },
+  {
+    "id": "ds-008", "domain": "data-science", "title": "Financial Data Analysis", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","matplotlib","seaborn"],
+    "description": "Analyze financial time-series data with moving averages, volatility analysis and trend detection.",
+    "whyBuildThis": "Financial data analysis is a specialized and high-demand skill. Time-series analysis patterns apply to finance, IoT, operations and many other domains.",
+    "whatYouLearn": ["Time-series analysis","Moving averages and windows","Volatility measurement","Trend detection","Financial data visualization"],
+    "prerequisites": ["ds-007"], "estimatedHours": 25,
+    "milestoneIds": ["ds-008-m01","ds-008-m02","ds-008-m03","ds-008-m04","ds-008-m05","ds-008-m06","ds-008-m07","ds-008-m08","ds-008-m09"]
+  },
+  {
+    "id": "ds-009", "domain": "data-science", "title": "End-to-End Predictive Analysis", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","scikit-learn","matplotlib"],
+    "description": "Complete a full data science project: data cleaning → feature engineering → model training → evaluation → interpretation.",
+    "whyBuildThis": "Most data science interview tasks are end-to-end analyses. This project teaches you to execute the complete workflow from raw data to insights.",
+    "whatYouLearn": ["End-to-end DS workflow","Feature engineering pipeline","Model selection and tuning","Results interpretation","Project documentation"],
+    "prerequisites": ["ds-006","ds-008"], "estimatedHours": 30,
+    "milestoneIds": ["ds-009-m01","ds-009-m02","ds-009-m03","ds-009-m04","ds-009-m05","ds-009-m06","ds-009-m07","ds-009-m08","ds-009-m09","ds-009-m10"]
+  },
+  {
+    "id": "ds-010", "domain": "data-science", "title": "Data Science Decision Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","CSE-AIML","CSE-DS","MCA"],
+    "technologies": ["Python","Flask","pandas","scikit-learn","matplotlib","HTML","CSS"],
+    "description": "Build a decision-support platform combining analytics, prediction and interactive reporting.",
+    "whyBuildThis": "This capstone demonstrates your ability to deliver complete, production-ready data solutions — the ultimate portfolio piece for data science roles.",
+    "whatYouLearn": ["Platform architecture for DS","Interactive reporting","Prediction API serving","Multi-analysis integration","Deployment and presentation"],
+    "prerequisites": ["ds-009"], "estimatedHours": 45,
+    "milestoneIds": ["ds-010-m01","ds-010-m02","ds-010-m03","ds-010-m04","ds-010-m05","ds-010-m06","ds-010-m07","ds-010-m08","ds-010-m09","ds-010-m10","ds-010-m11","ds-010-m12"]
+  },
+
+  {
+    "id": "da-001", "domain": "data-analytics", "title": "Personal Expense Dashboard", "difficulty": "beginner", "level": 1,
+    "type": "Mini Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","pandas","matplotlib"],
+    "description": "Build a personal expense dashboard with category breakdowns, monthly trends and budget vs actual visualizations.",
+    "whyBuildThis": "Dashboards are the primary output of data analytics. Starting with personal finance data makes the concepts relatable and the result immediately useful.",
+    "whatYouLearn": ["Basic data visualization","Pie and bar chart creation","Data aggregation","Dashboard layout concepts","pandas basics for analytics"],
+    "prerequisites": [], "estimatedHours": 8,
+    "milestoneIds": ["da-001-m01","da-001-m02","da-001-m03","da-001-m04","da-001-m05","da-001-m06"]
+  },
+  {
+    "id": "da-002", "domain": "data-analytics", "title": "Student Performance Dashboard", "difficulty": "beginner", "level": 2,
+    "type": "Academic Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","pandas","matplotlib","seaborn"],
+    "description": "Create a dashboard showing KPIs for student performance: pass rates, grade distributions and subject comparisons.",
+    "whyBuildThis": "KPI dashboards are what stakeholders actually look at. Learning to identify, calculate and present the right metrics is the core of data analytics.",
+    "whatYouLearn": ["KPI identification and calculation","Comparative visualizations","Heatmap creation","Distribution analysis","Dashboard storytelling"],
+    "prerequisites": ["da-001"], "estimatedHours": 10,
+    "milestoneIds": ["da-002-m01","da-002-m02","da-002-m03","da-002-m04","da-002-m05","da-002-m06"]
+  },
+  {
+    "id": "da-003", "domain": "data-analytics", "title": "Sales Dashboard", "difficulty": "beginner", "level": 3,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","pandas","plotly"],
+    "description": "Build an interactive sales dashboard with revenue trends, product performance and regional analysis.",
+    "whyBuildThis": "Sales dashboards are the most requested analytics deliverable in business. Using Plotly adds interactivity that makes your dashboard stand out.",
+    "whatYouLearn": ["Interactive chart creation with Plotly","Revenue trend analysis","Product performance metrics","Regional comparisons","Interactive dashboard design"],
+    "prerequisites": ["da-002"], "estimatedHours": 12,
+    "milestoneIds": ["da-003-m01","da-003-m02","da-003-m03","da-003-m04","da-003-m05","da-003-m06","da-003-m07"]
+  },
+  {
+    "id": "da-004", "domain": "data-analytics", "title": "Marketing Campaign Analysis", "difficulty": "intermediate", "level": 4,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["Python","pandas","matplotlib","seaborn"],
+    "description": "Analyze marketing campaign data for conversion rates, ROI, channel performance and campaign effectiveness.",
+    "whyBuildThis": "Marketing analytics directly impacts budget decisions. Understanding conversion funnels and ROI calculations is valuable for both analytics and product roles.",
+    "whatYouLearn": ["Conversion funnel analysis","ROI calculation","Channel comparison","A/B test result interpretation","Campaign performance metrics"],
+    "prerequisites": ["da-003"], "estimatedHours": 14,
+    "milestoneIds": ["da-004-m01","da-004-m02","da-004-m03","da-004-m04","da-004-m05","da-004-m06","da-004-m07"]
+  },
+  {
+    "id": "da-005", "domain": "data-analytics", "title": "HR Analytics Dashboard", "difficulty": "intermediate", "level": 5,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","IT","MCA"],
+    "technologies": ["Python","pandas","plotly","seaborn"],
+    "description": "Build an HR analytics dashboard analyzing employee demographics, attrition, satisfaction and performance.",
+    "whyBuildThis": "HR analytics is a growing field. Understanding workforce data analysis teaches you to work with sensitive data while deriving actionable organizational insights.",
+    "whatYouLearn": ["Employee retention analysis","Attrition risk factors","Satisfaction scoring","Demographic analysis","HR metric visualization"],
+    "prerequisites": ["da-003"], "estimatedHours": 16,
+    "milestoneIds": ["da-005-m01","da-005-m02","da-005-m03","da-005-m04","da-005-m05","da-005-m06","da-005-m07","da-005-m08"]
+  },
+  {
+    "id": "da-006", "domain": "data-analytics", "title": "E-Commerce Dashboard", "difficulty": "intermediate", "level": 6,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-DS","IT","MCA"],
+    "technologies": ["Python","pandas","plotly","seaborn"],
+    "description": "Create a comprehensive e-commerce analytics dashboard with sales, customer behavior and product performance.",
+    "whyBuildThis": "E-commerce analytics combines multiple data dimensions — products, customers, time, geography. This complexity mirrors real analyst workflows.",
+    "whatYouLearn": ["Multi-dimensional analytics","Customer behavior analysis","Product performance tracking","Cohort analysis basics","Dashboard design for stakeholders"],
+    "prerequisites": ["da-004","da-005"], "estimatedHours": 20,
+    "milestoneIds": ["da-006-m01","da-006-m02","da-006-m03","da-006-m04","da-006-m05","da-006-m06","da-006-m07","da-006-m08"]
+  },
+  {
+    "id": "da-007", "domain": "data-analytics", "title": "Customer Retention Analysis", "difficulty": "advanced", "level": 7,
+    "type": "Portfolio Project", "branches": ["CSE","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","scikit-learn","matplotlib"],
+    "description": "Analyze customer retention with cohort analysis, churn segmentation and predictive retention scoring.",
+    "whyBuildThis": "Retention analysis is directly tied to revenue. Understanding cohort analysis and retention metrics is essential for product analytics roles.",
+    "whatYouLearn": ["Cohort analysis","Retention curves","Churn segmentation","Predictive scoring basics","Business recommendation writing"],
+    "prerequisites": ["da-006"], "estimatedHours": 22,
+    "milestoneIds": ["da-007-m01","da-007-m02","da-007-m03","da-007-m04","da-007-m05","da-007-m06","da-007-m07","da-007-m08"]
+  },
+  {
+    "id": "da-008", "domain": "data-analytics", "title": "Business Performance Dashboard", "difficulty": "advanced", "level": 8,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","plotly","Flask"],
+    "description": "Build a multi-dimensional business performance dashboard with interactive filters and drill-down capabilities.",
+    "whyBuildThis": "Executive dashboards require sophisticated data presentation. Building interactive, multi-dimensional reports teaches you what business intelligence tools do under the hood.",
+    "whatYouLearn": ["Multi-dimensional reporting","Interactive filtering","Drill-down analysis","Executive summary design","Web-based dashboard deployment"],
+    "prerequisites": ["da-006","da-007"], "estimatedHours": 28,
+    "milestoneIds": ["da-008-m01","da-008-m02","da-008-m03","da-008-m04","da-008-m05","da-008-m06","da-008-m07","da-008-m08","da-008-m09"]
+  },
+  {
+    "id": "da-009", "domain": "data-analytics", "title": "Operations Analytics System", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-DS","MCA"],
+    "technologies": ["Python","pandas","plotly","Flask"],
+    "description": "Create an operations analytics system with KPI monitoring, trend analysis, anomaly detection and automated alerts.",
+    "whyBuildThis": "Operations analytics powers real-time business decisions. Understanding operational KPIs and automated monitoring prepares you for operations analyst roles.",
+    "whatYouLearn": ["Operational KPI design","Trend and anomaly detection","Automated alert logic","Real-time data processing concepts","Operations dashboard design"],
+    "prerequisites": ["da-008"], "estimatedHours": 30,
+    "milestoneIds": ["da-009-m01","da-009-m02","da-009-m03","da-009-m04","da-009-m05","da-009-m06","da-009-m07","da-009-m08","da-009-m09","da-009-m10"]
+  },
+  {
+    "id": "da-010", "domain": "data-analytics", "title": "Executive Analytics Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","CSE-DS","MCA"],
+    "technologies": ["Python","Flask","pandas","plotly","HTML","CSS","JavaScript"],
+    "description": "Build a capstone business intelligence platform combining multiple analytics modules into one executive dashboard.",
+    "whyBuildThis": "This capstone demonstrates your ability to design and deliver enterprise-grade analytics platforms — the ultimate portfolio piece for data analytics roles.",
+    "whatYouLearn": ["BI platform architecture","Multi-module analytics","Executive reporting","Interactive web dashboards","Full analytics deployment"],
+    "prerequisites": ["da-008","da-009"], "estimatedHours": 45,
+    "milestoneIds": ["da-010-m01","da-010-m02","da-010-m03","da-010-m04","da-010-m05","da-010-m06","da-010-m07","da-010-m08","da-010-m09","da-010-m10","da-010-m11","da-010-m12"]
+  },
+
+  {
+    "id": "cyber-001", "domain": "cybersecurity", "title": "Password Strength Analyzer", "difficulty": "beginner", "level": 1,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","IT","BCA","MCA"],
+    "technologies": ["Python"],
+    "description": "Build a tool that evaluates password strength based on length, complexity, common patterns and dictionary checks.",
+    "whyBuildThis": "Password security is the most fundamental cybersecurity concept. Understanding what makes passwords strong teaches you about entropy, attacks and defensive thinking.",
+    "whatYouLearn": ["Password security concepts","String analysis","Regular expressions","Entropy calculation basics","Security scoring algorithms"],
+    "prerequisites": [], "estimatedHours": 7,
+    "milestoneIds": ["cyber-001-m01","cyber-001-m02","cyber-001-m03","cyber-001-m04","cyber-001-m05"]
+  },
+  {
+    "id": "cyber-002", "domain": "cybersecurity", "title": "File Integrity Monitor", "difficulty": "beginner", "level": 2,
+    "type": "Academic Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python"],
+    "description": "Create a file integrity monitoring tool that detects changes using cryptographic hashing.",
+    "whyBuildThis": "File integrity monitoring is a core security control. Understanding hashing algorithms teaches you about data integrity verification used everywhere in security.",
+    "whatYouLearn": ["Cryptographic hashing (SHA-256)","File system monitoring","Integrity verification","Change detection algorithms","Security baseline concepts"],
+    "prerequisites": ["cyber-001"], "estimatedHours": 10,
+    "milestoneIds": ["cyber-002-m01","cyber-002-m02","cyber-002-m03","cyber-002-m04","cyber-002-m05","cyber-002-m06"]
+  },
+  {
+    "id": "cyber-003", "domain": "cybersecurity", "title": "Log Analyzer", "difficulty": "beginner", "level": 3,
+    "type": "Academic Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python"],
+    "description": "Build a security log analyzer that identifies suspicious patterns, failed logins and anomalous access.",
+    "whyBuildThis": "Log analysis is how security professionals detect breaches and attacks. Pattern recognition in logs is a foundational blue team skill.",
+    "whatYouLearn": ["Log file parsing","Pattern matching with regex","Suspicious activity detection","Data aggregation for security","Alert threshold logic"],
+    "prerequisites": ["cyber-001"], "estimatedHours": 12,
+    "milestoneIds": ["cyber-003-m01","cyber-003-m02","cyber-003-m03","cyber-003-m04","cyber-003-m05","cyber-003-m06","cyber-003-m07"]
+  },
+  {
+    "id": "cyber-004", "domain": "cybersecurity", "title": "Secure Authentication Demo", "difficulty": "intermediate", "level": 4,
+    "type": "Academic Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","Flask"],
+    "description": "Build a demonstration of secure vs insecure authentication, showing password hashing, session management and common vulnerabilities.",
+    "whyBuildThis": "Understanding authentication security requires seeing both the right and wrong ways. This project teaches defensive security through contrast.",
+    "whatYouLearn": ["Password hashing (bcrypt)","Session security","Common auth vulnerabilities","Secure vs insecure comparison","Authentication best practices"],
+    "prerequisites": ["cyber-002","cyber-003"], "estimatedHours": 14,
+    "milestoneIds": ["cyber-004-m01","cyber-004-m02","cyber-004-m03","cyber-004-m04","cyber-004-m05","cyber-004-m06","cyber-004-m07"]
+  },
+  {
+    "id": "cyber-005", "domain": "cybersecurity", "title": "Network Traffic Visualizer", "difficulty": "intermediate", "level": 5,
+    "type": "Portfolio Project", "branches": ["CSE","IT","ECE","MCA"],
+    "technologies": ["Python","matplotlib"],
+    "description": "Create a tool to parse and visualize network traffic data, identifying protocols, connections and communication patterns.",
+    "whyBuildThis": "Network security starts with understanding network communication. Visualizing traffic patterns helps identify normal vs anomalous behavior.",
+    "whatYouLearn": ["Network protocol concepts","Traffic data parsing","Communication pattern analysis","Network visualization","Port and protocol identification"],
+    "prerequisites": ["cyber-003"], "estimatedHours": 16,
+    "milestoneIds": ["cyber-005-m01","cyber-005-m02","cyber-005-m03","cyber-005-m04","cyber-005-m05","cyber-005-m06","cyber-005-m07"]
+  },
+  {
+    "id": "cyber-006", "domain": "cybersecurity", "title": "Security Log Dashboard", "difficulty": "intermediate", "level": 6,
+    "type": "Portfolio Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","Flask","HTML","CSS","JavaScript"],
+    "description": "Build a web dashboard to aggregate, filter and visualize security log events from multiple sources.",
+    "whyBuildThis": "Security dashboards are used in every SOC (Security Operations Center). Building one teaches you event aggregation, timeline analysis and security visualization.",
+    "whatYouLearn": ["Security event aggregation","Timeline visualization","Multi-source log integration","Dashboard filtering","Security metrics"],
+    "prerequisites": ["cyber-003","cyber-005"], "estimatedHours": 20,
+    "milestoneIds": ["cyber-006-m01","cyber-006-m02","cyber-006-m03","cyber-006-m04","cyber-006-m05","cyber-006-m06","cyber-006-m07","cyber-006-m08"]
+  },
+  {
+    "id": "cyber-007", "domain": "cybersecurity", "title": "Vulnerability Awareness Lab", "difficulty": "advanced", "level": 7,
+    "type": "Academic Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","Flask","HTML"],
+    "description": "Create a controlled environment demonstrating common web vulnerabilities (XSS, CSRF, SQLi) and their mitigations.",
+    "whyBuildThis": "Understanding how vulnerabilities work is essential for writing secure code. This lab teaches you both the attack and defense sides in a safe, controlled environment.",
+    "whatYouLearn": ["OWASP Top 10 vulnerabilities","XSS attack and prevention","CSRF attack and prevention","SQL injection and parameterization","Secure coding practices"],
+    "prerequisites": ["cyber-004","cyber-006"], "estimatedHours": 22,
+    "milestoneIds": ["cyber-007-m01","cyber-007-m02","cyber-007-m03","cyber-007-m04","cyber-007-m05","cyber-007-m06","cyber-007-m07","cyber-007-m08"]
+  },
+  {
+    "id": "cyber-008", "domain": "cybersecurity", "title": "Secure Web Application", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","Flask","HTML","CSS","JavaScript"],
+    "description": "Build a production-grade secure web application implementing authentication, input validation, CSP, CSRF protection and security headers.",
+    "whyBuildThis": "Applying all security principles to a real application is the ultimate test. This project is proof that you can build secure software — a differentiator for any developer.",
+    "whatYouLearn": ["Secure application architecture","Input validation and sanitization","Content Security Policy","Security header implementation","Defense in depth"],
+    "prerequisites": ["cyber-007"], "estimatedHours": 28,
+    "milestoneIds": ["cyber-008-m01","cyber-008-m02","cyber-008-m03","cyber-008-m04","cyber-008-m05","cyber-008-m06","cyber-008-m07","cyber-008-m08","cyber-008-m09"]
+  },
+  {
+    "id": "cyber-009", "domain": "cybersecurity", "title": "Intrusion Detection Prototype", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","scikit-learn","pandas"],
+    "description": "Build a prototype intrusion detection system using traffic/log analysis and anomaly detection.",
+    "whyBuildThis": "IDS/IPS systems are fundamental security infrastructure. Combining security knowledge with ML anomaly detection is a cutting-edge, high-demand skill.",
+    "whatYouLearn": ["Intrusion detection concepts","Anomaly detection algorithms","Network traffic classification","Alert generation","Security ML applications"],
+    "prerequisites": ["cyber-006","cyber-008"], "estimatedHours": 30,
+    "milestoneIds": ["cyber-009-m01","cyber-009-m02","cyber-009-m03","cyber-009-m04","cyber-009-m05","cyber-009-m06","cyber-009-m07","cyber-009-m08","cyber-009-m09","cyber-009-m10"]
+  },
+  {
+    "id": "cyber-010", "domain": "cybersecurity", "title": "Security Monitoring Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","IT","MCA"],
+    "technologies": ["Python","Flask","HTML","CSS","JavaScript","scikit-learn"],
+    "description": "Build a comprehensive security monitoring platform with log aggregation, alert management, visualization and defensive analysis.",
+    "whyBuildThis": "This capstone demonstrates the ability to build security infrastructure — the kind of platform that SOC teams rely on daily. A standout portfolio project for cybersecurity roles.",
+    "whatYouLearn": ["Security platform architecture","Real-time monitoring","Alert management and triage","Threat visualization","Security operations workflow"],
+    "prerequisites": ["cyber-008","cyber-009"], "estimatedHours": 45,
+    "milestoneIds": ["cyber-010-m01","cyber-010-m02","cyber-010-m03","cyber-010-m04","cyber-010-m05","cyber-010-m06","cyber-010-m07","cyber-010-m08","cyber-010-m09","cyber-010-m10","cyber-010-m11","cyber-010-m12"]
+  },
+
+  {
+    "id": "fs-001", "domain": "full-stack-development", "title": "Full-Stack To-Do", "difficulty": "beginner", "level": 1,
+    "type": "Mini Project", "branches": ["CSE","CSE-AIML","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","Python","Flask"],
+    "description": "Build a to-do application with a React frontend and Flask API backend — your first full-stack app.",
+    "whyBuildThis": "A full-stack to-do is the 'Hello World' of full-stack development. It teaches you the fundamental frontend-backend communication pattern.",
+    "whatYouLearn": ["Frontend-backend architecture","REST API consumption","CORS configuration","Full-stack data flow","Basic CRUD with API"],
+    "prerequisites": [], "estimatedHours": 10,
+    "milestoneIds": ["fs-001-m01","fs-001-m02","fs-001-m03","fs-001-m04","fs-001-m05","fs-001-m06"]
+  },
+  {
+    "id": "fs-002", "domain": "full-stack-development", "title": "Full-Stack Notes App", "difficulty": "beginner", "level": 2,
+    "type": "Mini Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["HTML","CSS","JavaScript","Python","Flask","JSON"],
+    "description": "Create a notes application with create, read, update, delete and data persistence through a Flask API.",
+    "whyBuildThis": "A notes app deepens your full-stack CRUD skills with data persistence — the pattern underlying most web applications.",
+    "whatYouLearn": ["Full CRUD implementation","JSON data persistence","API error handling","Form handling and validation","Data synchronization"],
+    "prerequisites": ["fs-001"], "estimatedHours": 12,
+    "milestoneIds": ["fs-002-m01","fs-002-m02","fs-002-m03","fs-002-m04","fs-002-m05","fs-002-m06"]
+  },
+  {
+    "id": "fs-003", "domain": "full-stack-development", "title": "Expense Management Platform", "difficulty": "intermediate", "level": 3,
+    "type": "Academic Project", "branches": ["CSE","CSE-DS","IT","BCA","MCA"],
+    "technologies": ["React","Python","Flask","JSON","Chart.js"],
+    "description": "Build a full expense management platform with authentication, data visualization and dashboard.",
+    "whyBuildThis": "Adding authentication and data visualization to a full-stack app teaches you security, charting and multi-feature integration — essential for any real project.",
+    "whatYouLearn": ["Authentication flow","Data visualization integration","Dashboard design","Multi-feature API design","State management with auth"],
+    "prerequisites": ["fs-002"], "estimatedHours": 18,
+    "milestoneIds": ["fs-003-m01","fs-003-m02","fs-003-m03","fs-003-m04","fs-003-m05","fs-003-m06","fs-003-m07","fs-003-m08"]
+  },
+  {
+    "id": "fs-004", "domain": "full-stack-development", "title": "Blog Platform", "difficulty": "intermediate", "level": 4,
+    "type": "Portfolio Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["React","Python","Flask","JSON"],
+    "description": "Build a full-stack blog platform with user management, posts, comments and content moderation.",
+    "whyBuildThis": "Blog platforms involve content management, user relationships and moderation — patterns used in social platforms, CMS systems and community tools.",
+    "whatYouLearn": ["User-content relationships","Comment system design","Content moderation concepts","Rich text handling","Multi-role access"],
+    "prerequisites": ["fs-003"], "estimatedHours": 22,
+    "milestoneIds": ["fs-004-m01","fs-004-m02","fs-004-m03","fs-004-m04","fs-004-m05","fs-004-m06","fs-004-m07","fs-004-m08"]
+  },
+  {
+    "id": "fs-005", "domain": "full-stack-development", "title": "Job Tracker", "difficulty": "intermediate", "level": 5,
+    "type": "Portfolio Project", "branches": ["CSE","IT","BCA","MCA"],
+    "technologies": ["React","Python","Flask","JSON"],
+    "description": "Create a job application tracker with status workflows, application management and analytics.",
+    "whyBuildThis": "Workflow-based applications (Kanban, pipelines) are extremely common in business software. This teaches you state machines and pipeline logic.",
+    "whatYouLearn": ["Workflow/pipeline design","Status state machines","Application management","Analytics and reporting","Drag-and-drop concepts"],
+    "prerequisites": ["fs-003"], "estimatedHours": 20,
+    "milestoneIds": ["fs-005-m01","fs-005-m02","fs-005-m03","fs-005-m04","fs-005-m05","fs-005-m06","fs-005-m07","fs-005-m08"]
+  },
+  {
+    "id": "fs-006", "domain": "full-stack-development", "title": "Learning Platform", "difficulty": "advanced", "level": 6,
+    "type": "Industry-style Project", "branches": ["CSE","CSE-AIML","IT","MCA"],
+    "technologies": ["React","Python","Flask","JSON"],
+    "description": "Build a learning platform with courses, modules, lessons, progress tracking and student enrollment.",
+    "whyBuildThis": "Learning platforms demonstrate complex entity hierarchies and progress tracking — key patterns in ed-tech, the industry that Project Hub itself belongs to.",
+    "whatYouLearn": ["Complex entity hierarchies","Progress tracking systems","Enrollment management","Content delivery","Module and lesson relationships"],
+    "prerequisites": ["fs-004","fs-005"], "estimatedHours": 28,
+    "milestoneIds": ["fs-006-m01","fs-006-m02","fs-006-m03","fs-006-m04","fs-006-m05","fs-006-m06","fs-006-m07","fs-006-m08","fs-006-m09"]
+  },
+  {
+    "id": "fs-007", "domain": "full-stack-development", "title": "E-Commerce Prototype", "difficulty": "advanced", "level": 7,
+    "type": "Industry-style Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["React","Python","Flask","JSON"],
+    "description": "Build an e-commerce prototype with product catalog, shopping cart, checkout flow and order management.",
+    "whyBuildThis": "E-commerce is one of the largest segments of web development. Understanding product catalogs, cart logic and order workflows is relevant to countless companies.",
+    "whatYouLearn": ["Product catalog design","Shopping cart logic","Checkout workflow","Order management","Inventory tracking"],
+    "prerequisites": ["fs-006"], "estimatedHours": 30,
+    "milestoneIds": ["fs-007-m01","fs-007-m02","fs-007-m03","fs-007-m04","fs-007-m05","fs-007-m06","fs-007-m07","fs-007-m08","fs-007-m09"]
+  },
+  {
+    "id": "fs-008", "domain": "full-stack-development", "title": "Social Community Platform", "difficulty": "advanced", "level": 8,
+    "type": "Portfolio Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["React","Python","Flask","JSON"],
+    "description": "Create a social community platform with user profiles, posts, comments, likes and real-time interaction.",
+    "whyBuildThis": "Social platforms involve the most complex user interaction patterns — feeds, notifications, real-time updates and content moderation. Building one levels up your full-stack skills.",
+    "whatYouLearn": ["Social feed algorithms","Real-time interactions","Content moderation","User relationship management","Notification systems"],
+    "prerequisites": ["fs-006","fs-007"], "estimatedHours": 35,
+    "milestoneIds": ["fs-008-m01","fs-008-m02","fs-008-m03","fs-008-m04","fs-008-m05","fs-008-m06","fs-008-m07","fs-008-m08","fs-008-m09","fs-008-m10"]
+  },
+  {
+    "id": "fs-009", "domain": "full-stack-development", "title": "Collaborative Project Platform", "difficulty": "advanced", "level": 9,
+    "type": "Industry-style Project", "branches": ["CSE","IT","MCA"],
+    "technologies": ["React","Python","Flask","JSON","WebSocket"],
+    "description": "Build a collaborative project platform with teams, tasks, real-time updates and project workflows.",
+    "whyBuildThis": "Team collaboration tools combine everything — real-time communication, project management, access control and multi-user workflows. It's the ultimate full-stack challenge.",
+    "whatYouLearn": ["Team collaboration patterns","Real-time synchronization","Project workflow management","Multi-user access control","Activity feeds and notifications"],
+    "prerequisites": ["fs-007","fs-008"], "estimatedHours": 40,
+    "milestoneIds": ["fs-009-m01","fs-009-m02","fs-009-m03","fs-009-m04","fs-009-m05","fs-009-m06","fs-009-m07","fs-009-m08","fs-009-m09","fs-009-m10"]
+  },
+  {
+    "id": "fs-010", "domain": "full-stack-development", "title": "Full-Stack SaaS Platform", "difficulty": "advanced", "level": 10,
+    "type": "Capstone", "branches": ["CSE","CSE-AIML","IT","MCA"],
+    "technologies": ["React","Python","Flask","JSON","HTML","CSS","JavaScript"],
+    "description": "Build a complete SaaS platform combining authentication, dashboard, projects, analytics, AI assistance and deployment.",
+    "whyBuildThis": "This capstone is the ultimate portfolio project. A working SaaS platform demonstrates every skill a full-stack developer needs — architecture, security, UX, APIs, deployment.",
+    "whatYouLearn": ["SaaS architecture design","Multi-tenant concepts","Full authentication system","Analytics dashboard","AI integration","Deployment pipeline"],
+    "prerequisites": ["fs-008","fs-009"], "estimatedHours": 55,
+    "milestoneIds": ["fs-010-m01","fs-010-m02","fs-010-m03","fs-010-m04","fs-010-m05","fs-010-m06","fs-010-m07","fs-010-m08","fs-010-m09","fs-010-m10","fs-010-m11","fs-010-m12","fs-010-m13","fs-010-m14"]
+  }
+]

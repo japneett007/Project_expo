@@ -1,0 +1,9 @@
+[
+  { "id": "first-build", "name": "First Build", "description": "Complete your first project.", "icon": "🏗️", "criteria": { "type": "projects_completed", "count": 1 }, "xpReward": 50 },
+  { "id": "debugger", "name": "Debugger", "description": "Complete 10 debugging-related milestones.", "icon": "🐛", "criteria": { "type": "debug_milestones", "count": 10 }, "xpReward": 75 },
+  { "id": "consistent-builder", "name": "Consistent Builder", "description": "Complete projects on 7 different days.", "icon": "📅", "criteria": { "type": "active_days", "count": 7 }, "xpReward": 100 },
+  { "id": "ai-explorer", "name": "AI Explorer", "description": "Use the Copilot to resolve a project issue.", "icon": "🤖", "criteria": { "type": "copilot_used", "count": 1 }, "xpReward": 25 },
+  { "id": "domain-specialist", "name": "Domain Specialist", "description": "Complete 5 projects within one domain.", "icon": "🎯", "criteria": { "type": "domain_projects", "count": 5 }, "xpReward": 200 },
+  { "id": "full-stack-builder", "name": "Full Stack Builder", "description": "Complete projects involving frontend, backend and data.", "icon": "🔥", "criteria": { "type": "fullstack_projects", "count": 3 }, "xpReward": 150 },
+  { "id": "capstone-complete", "name": "Capstone Complete", "description": "Finish a Level 10 capstone project.", "icon": "👑", "criteria": { "type": "capstone_completed", "count": 1 }, "xpReward": 300 }
+]

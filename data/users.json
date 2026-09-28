@@ -1,0 +1,110 @@
+[
+  {
+    "id": "aa06af14-0d28-49e0-b0ac-b9d892664ef7",
+    "name": "japneet",
+    "email": "japneet.anand@gmail.com",
+    "password": "$2b$12$LwOZcHQnu.7DRfUL5STmbu.HVsNzwYcFL1pjvy19OsrXfndy3y0VW",
+    "profileImage": "",
+    "degree": "B.Tech",
+    "branch": "CSE",
+    "semester": "Semester 4",
+    "skillLevel": "beginner",
+    "interestedDomains": [
+      "ai-ml"
+    ],
+    "goals": [
+      "Learn programming"
+    ],
+    "completedProjects": [
+      "aiml-001"
+    ],
+    "currentProjects": [
+      {
+        "projectId": "aiml-002",
+        "startedAt": "2026-09-22T18:14:48.550758Z",
+        "milestones": {
+          "aiml-002-m01": "completed",
+          "aiml-002-m02": "completed",
+          "aiml-002-m03": "completed",
+          "aiml-002-m04": "available",
+          "aiml-002-m05": "locked",
+          "aiml-002-m06": "locked"
+        },
+        "completedMilestones": [
+          "aiml-002-m01",
+          "aiml-002-m02",
+          "aiml-002-m03"
+        ],
+        "progress": 50.0
+      },
+      {
+        "projectId": "py-001",
+        "startedAt": "2026-09-22T19:32:22.522329Z",
+        "milestones": {
+          "py-001-m01": "available",
+          "py-001-m02": "locked",
+          "py-001-m03": "locked",
+          "py-001-m04": "locked",
+          "py-001-m05": "locked"
+        },
+        "completedMilestones": [],
+        "progress": 0
+      },
+      {
+        "projectId": "web-002",
+        "startedAt": "2026-09-23T05:59:59.823419Z",
+        "milestones": {
+          "web-002-m01": "available",
+          "web-002-m02": "locked",
+          "web-002-m03": "locked",
+          "web-002-m04": "locked",
+          "web-002-m05": "locked",
+          "web-002-m06": "locked"
+        },
+        "completedMilestones": [],
+        "progress": 0
+      },
+      {
+        "projectId": "aiml-003",
+        "startedAt": "2026-09-23T14:40:27.673036Z",
+        "milestones": {
+          "aiml-003-m01": "available",
+          "aiml-003-m02": "locked",
+          "aiml-003-m03": "locked",
+          "aiml-003-m04": "locked",
+          "aiml-003-m05": "locked",
+          "aiml-003-m06": "locked",
+          "aiml-003-m07": "locked"
+        },
+        "completedMilestones": [],
+        "progress": 0
+      },
+      {
+        "projectId": "web-001",
+        "startedAt": "2026-09-23T14:51:49.807450Z",
+        "milestones": {
+          "web-001-m01": "available",
+          "web-001-m02": "locked",
+          "web-001-m03": "locked",
+          "web-001-m04": "locked",
+          "web-001-m05": "locked",
+          "web-001-m06": "locked"
+        },
+        "completedMilestones": [],
+        "progress": 0
+      }
+    ],
+    "xp": 260,
+    "achievements": [
+      "ai-explorer"
+    ],
+    "onboardingComplete": true,
+    "activeDays": [
+      "2026-09-22",
+      "2026-09-23"
+    ],
+    "copilotUsed": true,
+    "createdAt": "2026-09-22T17:57:33.545751Z",
+    "updatedAt": "2026-09-23T14:51:49.807450Z"
+  }
+]

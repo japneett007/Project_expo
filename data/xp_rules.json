@@ -1,0 +1,22 @@
+{
+  "complete_learning_milestone": 10,
+  "complete_major_milestone": 25,
+  "complete_beginner_project": 100,
+  "complete_intermediate_project": 150,
+  "complete_advanced_project": 250,
+  "complete_capstone": 400,
+  "helpful_community_answer": 15,
+  "answer_upvoted": 5,
+  "levels": [
+    { "level": 1, "name": "Explorer", "minXP": 0 },
+    { "level": 2, "name": "Learner", "minXP": 100 },
+    { "level": 3, "name": "Builder", "minXP": 300 },
+    { "level": 4, "name": "Developer", "minXP": 600 },
+    { "level": 5, "name": "Problem Solver", "minXP": 1000 },
+    { "level": 6, "name": "Project Engineer", "minXP": 1500 },
+    { "level": 7, "name": "Advanced Builder", "minXP": 2200 },
+    { "level": 8, "name": "Technical Creator", "minXP": 3000 },
+    { "level": 9, "name": "Project Specialist", "minXP": 4000 },
+    { "level": 10, "name": "Master Builder", "minXP": 5500 }
+  ]
+}
