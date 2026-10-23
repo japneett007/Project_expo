@@ -1,61 +1,149 @@
-"""Milestone routes: get content, update progress, mark complete."""
+"""Milestone routes: get content, update progress, mark complete — SQLite."""
+import json
 import random
-from flask import Blueprint, request, jsonify
+
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils.helpers import read_json, write_json, now_iso, get_user_level
+
+from database import get_db, get_user_level_from_db
+from models import (
+    Milestone, Project, User,
+    UserProject, UserProjectMilestone, XpActionRule,
+    MotivationalMessage,
+)
+from utils.helpers import now_iso
 
 milestones_bp = Blueprint('milestones', __name__)
 
 
+# ── Serialisers ────────────────────────────────────────────────────────────────
+
+def _parse(value, default=None):
+    if default is None:
+        default = []
+    if value is None:
+        return default
+    if isinstance(value, list):
+        return value
+    try:
+        return json.loads(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _milestone_to_dict(m, status='available'):
+    return {
+        'id': m.id,
+        'projectId': m.project_id,
+        'title': m.title,
+        'objective': m.objective or '',
+        'why': m.why or '',
+        'concept': m.concept or '',
+        'explanation': m.explanation or '',
+        'implementation': m.implementation or '',
+        'expectedResult': m.expected_result or '',
+        'verification': m.verification or '',
+        'commonErrors': _parse(m.common_errors),
+        'debugging': m.debugging or '',
+        'sortOrder': m.sort_order,
+        'status': status,
+    }
+
+
+def _stub_milestone(milestone_id, status='available'):
+    """Fallback when a milestone has no DB content (milestones.json was empty)."""
+    return {
+        'id': milestone_id,
+        'projectId': '',
+        'title': milestone_id.replace('-', ' ').title(),
+        'objective': 'Complete this milestone to progress in your project.',
+        'why': 'This step builds on previous work and prepares you for the next milestone.',
+        'concept': 'Apply the concepts learned so far.',
+        'explanation': 'Review the instructions and implement the required functionality.',
+        'implementation': 'Follow the step-by-step guide in your project workspace.',
+        'expectedResult': 'Your implementation should work as described.',
+        'verification': 'Test your code and verify the expected output.',
+        'commonErrors': ['Check for syntax errors', 'Verify variable names', 'Check imports'],
+        'debugging': 'Use console.log or print statements to trace issues.',
+        'sortOrder': 0,
+        'status': status,
+    }
+
+
+def _xp_rule(db, action, default=0):
+    rule = db.get(XpActionRule, action)
+    return rule.xp_value if rule else default
+
+
+def _random_message(db, category, fallback=''):
+    msgs = (
+        db.query(MotivationalMessage)
+        .filter(MotivationalMessage.category == category)
+        .all()
+    )
+    if msgs:
+        return random.choice(msgs).message
+    return fallback
+
+
+# ── Routes ─────────────────────────────────────────────────────────────────────
+
 @milestones_bp.route('/project/<project_id>', methods=['GET'])
 @jwt_required()
 def get_project_milestones(project_id):
-    """Get milestones for a project with user's progress status."""
+    """Get milestones for a project with the user's progress status."""
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user = next((u for u in users if u['id'] == user_id), None)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
 
-    projects = read_json('projects.json')
-    project = next((p for p in projects if p['id'] == project_id), None)
-    if not project:
-        return jsonify({'error': 'Project not found'}), 404
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    # Get milestone content
-    all_milestones = read_json('milestones.json')
-    milestone_ids = project.get('milestoneIds', [])
+        project = db.get(Project, project_id)
+        if not project:
+            return jsonify({'error': 'Project not found'}), 404
 
-    # Get user's progress for this project
-    user_project = next(
-        (cp for cp in user.get('currentProjects', []) if cp['projectId'] == project_id), None
-    )
-    user_milestones = user_project.get('milestones', {}) if user_project else {}
+        milestone_ids = _parse(project.milestone_ids)
 
-    milestones = []
-    for mid in milestone_ids:
-        milestone_data = next((m for m in all_milestones if m.get('id') == mid), None)
-        if milestone_data:
-            milestone_data['status'] = user_milestones.get(mid, 'locked')
-        else:
-            # Generate basic milestone info from ID
-            milestone_data = {
-                'id': mid,
-                'title': mid.replace('-', ' ').title(),
-                'status': user_milestones.get(mid, 'locked')
-            }
-        milestones.append(milestone_data)
+        # User's milestone statuses for this project
+        ms_rows = (
+            db.query(UserProjectMilestone)
+            .filter(
+                UserProjectMilestone.user_id == user_id,
+                UserProjectMilestone.project_id == project_id,
+            )
+            .all()
+        )
+        status_map = {row.milestone_id: row.status for row in ms_rows}
 
-    completed = len([m for m in milestones if m.get('status') == 'completed'])
-    total = len(milestones)
-    progress = round((completed / total * 100), 1) if total > 0 else 0
+        milestones = []
+        for mid in milestone_ids:
+            status = status_map.get(mid, 'locked')
+            m = db.get(Milestone, mid)
+            if m:
+                milestones.append(_milestone_to_dict(m, status))
+            else:
+                milestones.append(_stub_milestone(mid, status))
+
+        completed = sum(1 for m in milestones if m['status'] == 'completed')
+        total = len(milestones)
+        progress = round((completed / total * 100), 1) if total > 0 else 0
+
+        # Also get progress from user_projects table (authoritative)
+        up = (
+            db.query(UserProject)
+            .filter(UserProject.user_id == user_id, UserProject.project_id == project_id)
+            .first()
+        )
+        if up:
+            progress = up.progress or progress
 
     return jsonify({
         'projectId': project_id,
         'milestones': milestones,
         'progress': progress,
         'completed': completed,
-        'total': total
+        'total': total,
     }), 200
 
 
@@ -64,137 +152,153 @@ def get_project_milestones(project_id):
 def complete_milestone(milestone_id):
     """Mark a milestone as complete — server-validated."""
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user_idx = next((i for i, u in enumerate(users) if u['id'] == user_id), None)
-    if user_idx is None:
-        return jsonify({'error': 'User not found'}), 404
 
-    user = users[user_idx]
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    # Find which project this milestone belongs to
-    project_found = False
-    for i, cp in enumerate(user.get('currentProjects', [])):
-        if milestone_id in cp.get('milestones', {}):
-            project_found = True
-            project_idx = i
-            break
+        # Find the UserProjectMilestone row for this milestone
+        upm = (
+            db.query(UserProjectMilestone)
+            .filter(
+                UserProjectMilestone.user_id == user_id,
+                UserProjectMilestone.milestone_id == milestone_id,
+            )
+            .first()
+        )
+        if not upm:
+            return jsonify({'error': 'Milestone not found in your projects'}), 404
 
-    if not project_found:
-        return jsonify({'error': 'Milestone not found in your projects'}), 404
+        if upm.status == 'completed':
+            return jsonify({'message': 'Milestone already completed'}), 200
+        if upm.status == 'locked':
+            return jsonify({'error': 'Milestone is locked'}), 403
 
-    user_project = user['currentProjects'][project_idx]
-    current_status = user_project['milestones'].get(milestone_id)
+        # Mark this milestone completed
+        upm.status = 'completed'
 
-    if current_status == 'completed':
-        return jsonify({'message': 'Milestone already completed'}), 200
-    if current_status == 'locked':
-        return jsonify({'error': 'Milestone is locked'}), 403
+        # Unlock next milestone in the project's sequence
+        project = db.get(Project, upm.project_id)
+        milestone_ids = _parse(project.milestone_ids) if project else []
+        if milestone_id in milestone_ids:
+            current_idx = milestone_ids.index(milestone_id)
+            next_idx = current_idx + 1
+            if next_idx < len(milestone_ids):
+                next_mid = milestone_ids[next_idx]
+                next_upm = (
+                    db.query(UserProjectMilestone)
+                    .filter(
+                        UserProjectMilestone.user_id == user_id,
+                        UserProjectMilestone.project_id == upm.project_id,
+                        UserProjectMilestone.milestone_id == next_mid,
+                    )
+                    .first()
+                )
+                if next_upm and next_upm.status == 'locked':
+                    next_upm.status = 'available'
 
-    # Mark as completed
-    user_project['milestones'][milestone_id] = 'completed'
-    if milestone_id not in user_project['completedMilestones']:
-        user_project['completedMilestones'].append(milestone_id)
+        # Recalculate progress
+        all_ms = (
+            db.query(UserProjectMilestone)
+            .filter(
+                UserProjectMilestone.user_id == user_id,
+                UserProjectMilestone.project_id == upm.project_id,
+            )
+            .all()
+        )
+        total_ms = len(all_ms)
+        completed_ms = sum(1 for row in all_ms if row.status == 'completed')
+        new_progress = round((completed_ms / total_ms * 100), 1) if total_ms > 0 else 0
 
-    # Unlock next milestone
-    projects = read_json('projects.json')
-    project = next((p for p in projects if p['id'] == user_project['projectId']), None)
-    if project:
-        milestone_ids = project.get('milestoneIds', [])
-        current_idx = milestone_ids.index(milestone_id) if milestone_id in milestone_ids else -1
-        if current_idx >= 0 and current_idx + 1 < len(milestone_ids):
-            next_mid = milestone_ids[current_idx + 1]
-            if user_project['milestones'].get(next_mid) == 'locked':
-                user_project['milestones'][next_mid] = 'available'
+        up = (
+            db.query(UserProject)
+            .filter(
+                UserProject.user_id == user_id,
+                UserProject.project_id == upm.project_id,
+            )
+            .first()
+        )
+        if up:
+            up.progress = new_progress
 
-    # Calculate progress
-    total = len(user_project['milestones'])
-    completed = len(user_project['completedMilestones'])
-    user_project['progress'] = round((completed / total * 100), 1) if total > 0 else 0
+        # Award XP
+        xp_gained = _xp_rule(db, 'complete_learning_milestone', 10)
+        if completed_ms % 3 == 0 or completed_ms == total_ms:
+            xp_gained = _xp_rule(db, 'complete_major_milestone', 25)
 
-    # Award XP (server-side calculation)
-    xp_rules = read_json('xp_rules.json')
-    xp_gained = xp_rules.get('complete_learning_milestone', 10)
+        user.xp = (user.xp or 0) + xp_gained
 
-    # Check if it's a major milestone (every 3rd or final)
-    if completed % 3 == 0 or completed == total:
-        xp_gained = xp_rules.get('complete_major_milestone', 25)
+        # Track active day
+        today = now_iso()[:10]
+        try:
+            active_days = json.loads(user.active_days) if isinstance(user.active_days, str) else []
+        except (ValueError, TypeError):
+            active_days = []
+        if today not in active_days:
+            active_days.append(today)
+            user.active_days = json.dumps(active_days, ensure_ascii=False)
 
-    user['xp'] = user.get('xp', 0) + xp_gained
+        # Check project completion
+        project_completed = False
+        motivation_message = None
 
-    # Track active day for achievements
-    today = now_iso()[:10]
-    if today not in user.get('activeDays', []):
-        user['activeDays'] = user.get('activeDays', []) + [today]
+        if new_progress >= 100:
+            project_completed = True
+            if up:
+                up.status = 'completed'
 
-    # Check for project completion
-    project_completed = False
-    motivation_message = None
-    messages = read_json('motivational_messages.json')
+            # Award project-completion XP
+            if project:
+                difficulty = project.difficulty
+                level = project.level
+                if level == 10:
+                    user.xp += _xp_rule(db, 'complete_capstone', 400)
+                elif difficulty == 'advanced' or level >= 6:
+                    user.xp += _xp_rule(db, 'complete_advanced_project', 250)
+                elif difficulty == 'intermediate' or level >= 4:
+                    user.xp += _xp_rule(db, 'complete_intermediate_project', 150)
+                else:
+                    user.xp += _xp_rule(db, 'complete_beginner_project', 100)
 
-    if user_project['progress'] >= 100:
-        project_completed = True
-        # Move to completed projects
-        user['completedProjects'] = user.get('completedProjects', []) + [user_project['projectId']]
-        user['currentProjects'].pop(project_idx)
+            motivation_message = _random_message(
+                db, 'project_complete', '🎉 Project complete!'
+            )
+        else:
+            motivation_message = _random_message(
+                db, 'milestone', 'Keep going! 🔥'
+            )
 
-        # Award project completion XP based on difficulty
-        if project:
-            difficulty = project.get('difficulty', 'beginner')
-            level = project.get('level', 1)
-            if level == 10:
-                user['xp'] += xp_rules.get('complete_capstone', 400)
-            elif difficulty == 'advanced' or level >= 6:
-                user['xp'] += xp_rules.get('complete_advanced_project', 250)
-            elif difficulty == 'intermediate' or level >= 4:
-                user['xp'] += xp_rules.get('complete_intermediate_project', 150)
-            else:
-                user['xp'] += xp_rules.get('complete_beginner_project', 100)
+        user.updated_at = now_iso()
+        level_info = get_user_level_from_db(user.xp, db)
+        final_progress = 100 if project_completed else new_progress
 
-        motivation_message = random.choice(messages.get('project_complete_messages', ['🎉 Project complete!']))
-    else:
-        user['currentProjects'][project_idx] = user_project
-        motivation_message = random.choice(messages.get('milestone_messages', ['Keep going!']))
-
-    # Calculate level
-    level_info = get_user_level(user['xp'], xp_rules)
-
-    user['updatedAt'] = now_iso()
-    users[user_idx] = user
-    write_json('users.json', users)
+        # Capture primitive values before session closes
+        _xp_gained = xp_gained
+        _total_xp = user.xp
+        _level_info = level_info
+        _progress = final_progress
+        _project_completed = project_completed
+        _motivation_message = motivation_message
 
     return jsonify({
         'message': 'Milestone completed',
-        'xpGained': xp_gained,
-        'totalXP': user['xp'],
-        'level': level_info,
-        'progress': user_project['progress'] if not project_completed else 100,
-        'projectCompleted': project_completed,
-        'motivationMessage': motivation_message
+        'xpGained': _xp_gained,
+        'totalXP': _total_xp,
+        'level': _level_info,
+        'progress': _progress,
+        'projectCompleted': _project_completed,
+        'motivationMessage': _motivation_message,
     }), 200
 
 
 @milestones_bp.route('/<milestone_id>', methods=['GET'])
 def get_milestone_content(milestone_id):
-    """Get full milestone content (concept, explanation, implementation, etc.)."""
-    all_milestones = read_json('milestones.json')
-    milestone = next((m for m in all_milestones if m.get('id') == milestone_id), None)
+    """Get full milestone content."""
+    with get_db() as db:
+        m = db.get(Milestone, milestone_id)
+        if not m:
+            return jsonify({'milestone': _stub_milestone(milestone_id, 'available')}), 200
+        data = _milestone_to_dict(m, 'available')
 
-    if not milestone:
-        # Return a generated basic milestone
-        return jsonify({
-            'milestone': {
-                'id': milestone_id,
-                'title': milestone_id.replace('-', ' ').title(),
-                'objective': 'Complete this milestone to progress in your project.',
-                'why': 'This step builds on previous work and prepares you for the next milestone.',
-                'concept': 'Apply the concepts learned so far.',
-                'explanation': 'Review the instructions and implement the required functionality.',
-                'implementation': 'Follow the step-by-step guide in your project workspace.',
-                'expectedResult': 'Your implementation should work as described.',
-                'verification': 'Test your code and verify the expected output.',
-                'commonErrors': ['Check for syntax errors', 'Verify variable names', 'Check imports'],
-                'debugging': 'Use console.log or print statements to trace issues.'
-            }
-        }), 200
-
-    return jsonify({'milestone': milestone}), 200
+    return jsonify({'milestone': data}), 200

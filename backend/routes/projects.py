@@ -1,60 +1,131 @@
-"""Project discovery, detail and recommendation routes."""
+"""Project discovery, detail, recommendation and start routes — SQLite."""
+import json
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils.helpers import read_json, write_json, now_iso
+
+from database import get_db
+from models import (
+    Domain, Branch, Project, ProjectPrerequisite,
+    User, UserProject, UserProjectMilestone,
+)
+from utils.helpers import now_iso
 
 projects_bp = Blueprint('projects', __name__)
 
 
+# ── Serialisers ────────────────────────────────────────────────────────────────
+
+def _parse_json_field(value, default=None):
+    """Safely parse a JSON text column; return default on failure."""
+    if default is None:
+        default = []
+    if value is None:
+        return default
+    if isinstance(value, list):
+        return value
+    try:
+        return json.loads(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _project_to_dict(p: Project) -> dict:
+    return {
+        'id': p.id,
+        'domain': p.domain_id,          # frontend uses p.domain
+        'title': p.title,
+        'difficulty': p.difficulty,
+        'level': p.level,
+        'type': p.type,
+        'branches': _parse_json_field(p.branches),
+        'technologies': _parse_json_field(p.technologies),
+        'description': p.description,
+        'whyBuildThis': p.why_build_this,
+        'whatYouLearn': _parse_json_field(p.what_you_learn),
+        'prerequisites': _parse_json_field(p.prerequisites),
+        'estimatedHours': p.estimated_hours,
+        'milestoneIds': _parse_json_field(p.milestone_ids),
+    }
+
+
+def _domain_to_dict(d: Domain) -> dict:
+    return {'id': d.id, 'name': d.name, 'icon': d.icon or '', 'color': d.color or '', 'description': d.description or ''}
+
+
+def _branch_to_dict(b: Branch) -> dict:
+    return {'id': b.id, 'name': b.name, 'shortName': b.short_name}
+
+
+# ── Routes ─────────────────────────────────────────────────────────────────────
+
 @projects_bp.route('', methods=['GET'])
 def list_projects():
     """List projects with filtering: domain, difficulty, branch, type, search."""
-    projects = read_json('projects.json')
-
-    # Filters
     domain = request.args.get('domain')
     difficulty = request.args.get('difficulty')
     branch = request.args.get('branch')
     project_type = request.args.get('type')
     search = request.args.get('search', '').lower()
-
-    if domain:
-        projects = [p for p in projects if p['domain'] == domain]
-    if difficulty:
-        projects = [p for p in projects if p['difficulty'] == difficulty]
-    if branch:
-        projects = [p for p in projects if branch in p.get('branches', [])]
-    if project_type:
-        projects = [p for p in projects if p.get('type', '').lower() == project_type.lower()]
-    if search:
-        projects = [p for p in projects if
-                    search in p['title'].lower() or
-                    search in p.get('description', '').lower() or
-                    any(search in t.lower() for t in p.get('technologies', []))]
-
-    # Sort by level
     sort_by = request.args.get('sort', 'level')
-    if sort_by == 'level':
-        projects.sort(key=lambda p: p.get('level', 0))
-    elif sort_by == 'title':
-        projects.sort(key=lambda p: p['title'].lower())
 
-    return jsonify({'projects': projects, 'total': len(projects)}), 200
+    with get_db() as db:
+        q = db.query(Project)
+        if domain:
+            q = q.filter(Project.domain_id == domain)
+        if difficulty:
+            q = q.filter(Project.difficulty == difficulty)
+
+        projects = q.all()
+
+        # Post-filter for JSON-text fields
+        if branch:
+            projects = [p for p in projects if branch in _parse_json_field(p.branches)]
+        if project_type:
+            projects = [p for p in projects if p.type.lower() == project_type.lower()]
+        if search:
+            projects = [
+                p for p in projects
+                if search in p.title.lower()
+                or search in (p.description or '').lower()
+                or any(search in t.lower() for t in _parse_json_field(p.technologies))
+            ]
+
+        if sort_by == 'title':
+            projects.sort(key=lambda p: p.title.lower())
+        else:
+            projects.sort(key=lambda p: p.level)
+
+        result = [_project_to_dict(p) for p in projects]
+
+    return jsonify({'projects': result, 'total': len(result)}), 200
 
 
 @projects_bp.route('/<project_id>', methods=['GET'])
 def get_project(project_id):
-    """Get detailed project information."""
-    projects = read_json('projects.json')
-    project = next((p for p in projects if p['id'] == project_id), None)
-    if not project:
-        return jsonify({'error': 'Project not found'}), 404
+    """Get detailed project information including prerequisite details."""
+    with get_db() as db:
+        project = db.get(Project, project_id)
+        if not project:
+            return jsonify({'error': 'Project not found'}), 404
 
-    # Attach prerequisites
-    prereqs = read_json('prerequisites.json')
-    project['prerequisiteDetails'] = prereqs.get(project_id, {'required': [], 'recommended': []})
+        # Build prerequisiteDetails from project_prerequisites table
+        prereq_rows = (
+            db.query(ProjectPrerequisite)
+            .filter(ProjectPrerequisite.project_id == project_id)
+            .all()
+        )
+        prereq_details = {'required': [], 'recommended': []}
+        for row in prereq_rows:
+            if row.kind == 'required':
+                prereq_details['required'].append(row.label)
+            else:
+                prereq_details['recommended'].append(row.label)
 
-    return jsonify({'project': project}), 200
+        data = _project_to_dict(project)
+        data['prerequisiteDetails'] = prereq_details
+
+    return jsonify({'project': data}), 200
 
 
 @projects_bp.route('/<project_id>/start', methods=['POST'])
@@ -62,44 +133,63 @@ def get_project(project_id):
 def start_project(project_id):
     """Start a project for the current user."""
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user_idx = next((i for i, u in enumerate(users) if u['id'] == user_id), None)
-    if user_idx is None:
-        return jsonify({'error': 'User not found'}), 404
 
-    user = users[user_idx]
-    projects = read_json('projects.json')
-    project = next((p for p in projects if p['id'] == project_id), None)
-    if not project:
-        return jsonify({'error': 'Project not found'}), 404
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    # Check if already started
-    if any(cp['projectId'] == project_id for cp in user.get('currentProjects', [])):
-        return jsonify({'message': 'Project already started'}), 200
+        project = db.get(Project, project_id)
+        if not project:
+            return jsonify({'error': 'Project not found'}), 404
 
-    # Check if already completed
-    if project_id in user.get('completedProjects', []):
-        return jsonify({'message': 'Project already completed'}), 200
+        # Already started?
+        existing_up = (
+            db.query(UserProject)
+            .filter(UserProject.user_id == user_id, UserProject.project_id == project_id)
+            .first()
+        )
+        if existing_up:
+            if existing_up.status == 'completed':
+                return jsonify({'message': 'Project already completed'}), 200
+            return jsonify({'message': 'Project already started'}), 200
 
-    # Add to current projects with milestone tracking
-    milestone_ids = project.get('milestoneIds', [])
-    user_project = {
-        'projectId': project_id,
-        'startedAt': now_iso(),
-        'milestones': {mid: 'locked' for mid in milestone_ids},
-        'completedMilestones': [],
-        'progress': 0
-    }
-    # Unlock first milestone
-    if milestone_ids:
-        user_project['milestones'][milestone_ids[0]] = 'available'
+        milestone_ids = _parse_json_field(project.milestone_ids)
 
-    user['currentProjects'].append(user_project)
-    user['updatedAt'] = now_iso()
-    users[user_idx] = user
-    write_json('users.json', users)
+        # Create user_project row
+        up = UserProject(
+            user_id=user_id,
+            project_id=project_id,
+            started_at=now_iso(),
+            progress=0.0,
+            status='active',
+        )
+        db.add(up)
+        db.flush()
 
-    return jsonify({'message': 'Project started', 'userProject': user_project}), 201
+        # Create user_project_milestone rows: first available, rest locked
+        for i, mid in enumerate(milestone_ids):
+            status = 'available' if i == 0 else 'locked'
+            db.add(UserProjectMilestone(
+                user_id=user_id,
+                project_id=project_id,
+                milestone_id=mid,
+                status=status,
+            ))
+
+        user.updated_at = now_iso()
+
+        # Return shape matching the old JSON structure
+        milestones_dict = {mid: ('available' if i == 0 else 'locked') for i, mid in enumerate(milestone_ids)}
+        user_project_payload = {
+            'projectId': project_id,
+            'startedAt': up.started_at,
+            'milestones': milestones_dict,
+            'completedMilestones': [],
+            'progress': 0,
+        }
+
+    return jsonify({'message': 'Project started', 'userProject': user_project_payload}), 201
 
 
 @projects_bp.route('/recommended', methods=['GET'])
@@ -107,61 +197,74 @@ def start_project(project_id):
 def recommended_projects():
     """Get personalized project recommendations based on user profile."""
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user = next((u for u in users if u['id'] == user_id), None)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
 
-    projects = read_json('projects.json')
-    completed_ids = user.get('completedProjects', [])
-    current_ids = [cp['projectId'] for cp in user.get('currentProjects', [])]
-    interested_domains = user.get('interestedDomains', [])
-    branch = user.get('branch', '')
-    skill_level = user.get('skillLevel', 'beginner')
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    # Filter out completed and current
-    available = [p for p in projects if p['id'] not in completed_ids and p['id'] not in current_ids]
+        # IDs to exclude
+        started_or_done = {
+            row.project_id
+            for row in db.query(UserProject)
+            .filter(UserProject.user_id == user_id)
+            .all()
+        }
+        completed_ids = {
+            row.project_id
+            for row in db.query(UserProject)
+            .filter(UserProject.user_id == user_id, UserProject.status == 'completed')
+            .all()
+        }
 
-    # Score projects based on user profile
-    scored = []
-    for p in available:
-        score = 0
-        # Domain match
-        if p['domain'] in interested_domains:
-            score += 30
-        # Branch match
-        if branch in p.get('branches', []):
-            score += 20
-        # Skill level match
-        skill_map = {'beginner': [1, 2, 3], 'intermediate': [3, 4, 5, 6], 'advanced': [6, 7, 8, 9, 10]}
-        if p.get('level', 1) in skill_map.get(skill_level, [1, 2, 3]):
-            score += 25
-        # Prerequisites met
-        prereq_projects = p.get('prerequisites', [])
-        if all(pid in completed_ids for pid in prereq_projects):
-            score += 25
-        elif not prereq_projects:
-            score += 15
+        interested_domains = _parse_json_field(user.interested_domains)
+        skill_level = user.skill_level or 'beginner'
+        branch = user.branch_id or ''
 
-        scored.append({**p, '_score': score})
+        skill_map = {
+            'beginner': [1, 2, 3],
+            'intermediate': [3, 4, 5, 6],
+            'advanced': [6, 7, 8, 9, 10],
+        }
+        level_range = skill_map.get(skill_level, [1, 2, 3])
 
-    scored.sort(key=lambda x: x['_score'], reverse=True)
+        all_projects = db.query(Project).all()
+        scored = []
+        for p in all_projects:
+            if p.id in started_or_done:
+                continue
+            score = 0
+            if p.domain_id in interested_domains:
+                score += 30
+            if branch and branch in _parse_json_field(p.branches):
+                score += 20
+            if p.level in level_range:
+                score += 25
+            prereq_ids = _parse_json_field(p.prerequisites)
+            if all(pid in completed_ids for pid in prereq_ids):
+                score += 25
+            elif not prereq_ids:
+                score += 15
+            scored.append((score, _project_to_dict(p)))
 
-    # Return top 10 recommendations
-    recommendations = [{k: v for k, v in p.items() if k != '_score'} for p in scored[:10]]
-
+    scored.sort(key=lambda x: x[0], reverse=True)
+    recommendations = [d for _, d in scored[:10]]
     return jsonify({'recommendations': recommendations}), 200
 
 
 @projects_bp.route('/domains', methods=['GET'])
 def list_domains():
     """List all available domains."""
-    domains = read_json('domains.json')
-    return jsonify({'domains': domains}), 200
+    with get_db() as db:
+        domains = db.query(Domain).order_by(Domain.name).all()
+        result = [_domain_to_dict(d) for d in domains]
+    return jsonify({'domains': result}), 200
 
 
 @projects_bp.route('/branches', methods=['GET'])
 def list_branches():
     """List all available academic branches."""
-    branches = read_json('branches.json')
-    return jsonify({'branches': branches}), 200
+    with get_db() as db:
+        branches = db.query(Branch).order_by(Branch.name).all()
+        result = [_branch_to_dict(b) for b in branches]
+    return jsonify({'branches': result}), 200

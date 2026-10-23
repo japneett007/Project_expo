@@ -20,6 +20,11 @@ frontend/dist/
 # Local agent tooling
 .agents/
 
+# SQLite database files
+*.db
+*.db-wal
+*.db-shm
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,10 +1,15 @@
-"""AI Development Copilot routes — proxies requests to Groq API."""
+"""AI Development Copilot routes — proxies requests to Groq API — SQLite."""
+import json
 import os
+
 import requests
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils.helpers import read_json, write_json, generate_id, now_iso, sanitize_string
+
+from database import get_db
 from middleware.rate_limit import rate_limit
+from models import Milestone, Project, User
+from utils.helpers import now_iso, sanitize_string
 
 copilot_bp = Blueprint('copilot', __name__)
 
@@ -12,16 +17,29 @@ GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
 GROQ_API_URL = os.getenv('GROQ_API_URL', 'https://api.groq.com/openai/v1/chat/completions')
 
 
-def build_system_prompt(project, milestone, user_question):
+def _parse(value, default=None):
+    if default is None:
+        default = []
+    if value is None:
+        return default
+    if isinstance(value, list):
+        return value
+    try:
+        return json.loads(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def build_system_prompt(project_data: dict, milestone_data: dict, user_question: str) -> str:
     """Build a project-aware system prompt for the AI Copilot."""
     return f"""You are an AI Development Copilot for Project Hub — a project-based learning platform.
 
 CURRENT CONTEXT:
-- Project: {project.get('title', 'Unknown')}
-- Domain: {project.get('domain', 'Unknown')}
-- Technologies: {', '.join(project.get('technologies', []))}
-- Current Milestone: {milestone.get('title', 'Unknown') if milestone else 'Not specified'}
-- Difficulty: {project.get('difficulty', 'Unknown')}
+- Project: {project_data.get('title', 'Unknown')}
+- Domain: {project_data.get('domain', 'Unknown')}
+- Technologies: {', '.join(project_data.get('technologies', []))}
+- Current Milestone: {milestone_data.get('title', 'Unknown') if milestone_data else 'Not specified'}
+- Difficulty: {project_data.get('difficulty', 'Unknown')}
 
 YOUR ROLE:
 You are a patient, knowledgeable mentor helping a student build this project. You:
@@ -61,98 +79,95 @@ def chat():
     message = sanitize_string(data.get('message', ''))
     project_id = data.get('projectId', '')
     milestone_id = data.get('milestoneId', '')
-    stage = data.get('stage', 'explanation')  # explanation, hint, solution
+    stage = data.get('stage', 'explanation')
 
     if not message:
         return jsonify({'error': 'Message is required'}), 400
 
-    # Get project context
-    projects = read_json('projects.json')
-    project = next((p for p in projects if p['id'] == project_id), {})
+    # ── Fetch context from DB ──────────────────────────────────────────────────
+    with get_db() as db:
+        project_obj = db.get(Project, project_id) if project_id else None
+        project_data = {
+            'title': project_obj.title if project_obj else '',
+            'domain': project_obj.domain_id if project_obj else '',
+            'technologies': _parse(project_obj.technologies) if project_obj else [],
+            'difficulty': project_obj.difficulty if project_obj else '',
+        }
 
-    # Get milestone context
-    milestone = {}
-    if milestone_id:
-        milestones = read_json('milestones.json')
-        milestone = next((m for m in milestones if m.get('id') == milestone_id), {})
+        milestone_data = {}
+        if milestone_id:
+            ms = db.get(Milestone, milestone_id)
+            if ms:
+                milestone_data = {'title': ms.title}
 
-    # Build system prompt
-    system_prompt = build_system_prompt(project, milestone, message)
+        # Mark copilot as used (for achievements) — only if not already set
+        user = db.get(User, user_id)
+        if user and not user.copilot_used:
+            user.copilot_used = 1
+            user.updated_at = now_iso()
 
-    # Add stage instruction
+    # ── Build prompt and call Groq ─────────────────────────────────────────────
+    system_prompt = build_system_prompt(project_data, milestone_data, message)
+
     if stage == 'hint':
         system_prompt += "\n\nThe student is asking for a HINT. Give them a direction to think about, not the full solution."
     elif stage == 'solution':
         system_prompt += "\n\nThe student is asking for the SOLUTION. Provide the concrete implementation with full explanation."
 
-    # Call Groq API
-    ai_response = ""
+    ai_response = ''
     if GROQ_API_KEY:
         try:
             headers = {
                 'Authorization': f'Bearer {GROQ_API_KEY}',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             }
             payload = {
                 'model': 'gpt-oss-1-2.0',
                 'messages': [
                     {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': message}
+                    {'role': 'user', 'content': message},
                 ],
                 'max_tokens': 2000,
-                'temperature': 0.7
+                'temperature': 0.7,
             }
-
-            # Include chat history if provided
             history = data.get('history', [])
             if history:
-                messages_list = [{'role': 'system', 'content': system_prompt}]
-                for h in history[-10:]:  # Last 10 messages for context
-                    messages_list.append({'role': h.get('role', 'user'), 'content': h.get('content', '')})
-                messages_list.append({'role': 'user', 'content': message})
-                payload['messages'] = messages_list
+                msgs = [{'role': 'system', 'content': system_prompt}]
+                for h in history[-10:]:
+                    msgs.append({'role': h.get('role', 'user'), 'content': h.get('content', '')})
+                msgs.append({'role': 'user', 'content': message})
+                payload['messages'] = msgs
 
             response = requests.post(GROQ_API_URL, json=payload, headers=headers, timeout=30)
             if response.status_code == 200:
                 result = response.json()
                 ai_response = result.get('choices', [{}])[0].get('message', {}).get('content', '')
             else:
-                ai_response = f"I'm having trouble connecting right now. Please try again in a moment. (Status: {response.status_code})"
+                ai_response = f"I'm having trouble connecting right now. Please try again. (Status: {response.status_code})"
         except requests.exceptions.Timeout:
             ai_response = "The request timed out. Please try again."
-        except Exception as e:
+        except Exception:
             ai_response = "I'm temporarily unavailable. Please try again shortly."
     else:
-        # Fallback when no API key is configured
-        ai_response = _generate_fallback_response(message, project, milestone, stage)
-
-    # Mark user as having used copilot (for achievements)
-    users = read_json('users.json')
-    user_idx = next((i for i, u in enumerate(users) if u['id'] == user_id), None)
-    if user_idx is not None and not users[user_idx].get('copilotUsed', False):
-        users[user_idx]['copilotUsed'] = True
-        users[user_idx]['updatedAt'] = now_iso()
-        write_json('users.json', users)
+        ai_response = _generate_fallback_response(message, project_data, milestone_data, stage)
 
     return jsonify({
         'response': ai_response,
         'projectId': project_id,
         'milestoneId': milestone_id,
-        'stage': stage
+        'stage': stage,
     }), 200
 
 
 @copilot_bp.route('/history/<project_id>', methods=['GET'])
 @jwt_required()
 def get_history(project_id):
-    """Get chat history for a project (stored client-side in V1)."""
-    # In V1, chat history is managed client-side in localStorage
-    # This endpoint is a placeholder for future server-side storage
+    """Chat history placeholder (managed client-side in V1)."""
     return jsonify({'history': [], 'projectId': project_id}), 200
 
 
-def _generate_fallback_response(message, project, milestone, stage):
-    """Generate a helpful fallback response when AI API is not configured."""
+def _generate_fallback_response(message: str, project: dict, milestone: dict, stage: str) -> str:
+    """Generate a helpful fallback response when the AI API is not configured."""
     project_title = project.get('title', 'your project')
     technologies = ', '.join(project.get('technologies', ['the required technologies']))
 
@@ -189,10 +204,5 @@ Since this project uses **{technologies}**, you'll want to:
 2. **Implement** the core logic step by step
 3. **Test** each piece before moving on
 4. **Debug** by checking inputs and outputs at each step
-
-For the specific implementation, I recommend:
-- Check the milestone instructions for exact requirements
-- Use console.log/print statements to verify your logic
-- Compare your output with the expected result
 
 *Note: For more detailed AI assistance, configure the Groq API key in your backend .env file.*"""

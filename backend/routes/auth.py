@@ -1,15 +1,112 @@
-"""Authentication routes: register, login, logout, profile."""
+"""Authentication routes: register, login, logout, me, profile — SQLite."""
+import json
+
+import bcrypt
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
     create_access_token, set_access_cookies, unset_jwt_cookies,
-    jwt_required, get_jwt_identity
+    jwt_required, get_jwt_identity,
 )
-import bcrypt
-from utils.helpers import read_json, write_json, generate_id, now_iso, sanitize_string, validate_email
+
+from database import get_db
 from middleware.rate_limit import rate_limit
+from models import User, UserProject, UserProjectMilestone, UserAchievement
+from utils.helpers import generate_id, now_iso, sanitize_string, validate_email
 
 auth_bp = Blueprint('auth', __name__)
 
+
+# ── User serialiser ────────────────────────────────────────────────────────────
+
+def _parse(value, default=None):
+    if default is None:
+        default = []
+    if value is None:
+        return default
+    if isinstance(value, list):
+        return value
+    try:
+        return json.loads(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _safe_user(user: User, db) -> dict:
+    """
+    Return the user dict the frontend expects.
+
+    Reconstructed fields (stored across multiple tables):
+      - completedProjects: list of project_ids with status='completed'
+      - currentProjects:   list of {projectId, startedAt, progress, milestones{}, completedMilestones[]}
+      - achievements:      list of achievement_ids
+    """
+    # completedProjects
+    completed_projects = [
+        row.project_id
+        for row in db.query(UserProject)
+        .filter(UserProject.user_id == user.id, UserProject.status == 'completed')
+        .order_by(UserProject.started_at)
+        .all()
+    ]
+
+    # currentProjects
+    active_ups = (
+        db.query(UserProject)
+        .filter(UserProject.user_id == user.id, UserProject.status == 'active')
+        .all()
+    )
+    current_projects = []
+    for up in active_ups:
+        ms_rows = (
+            db.query(UserProjectMilestone)
+            .filter(
+                UserProjectMilestone.user_id == user.id,
+                UserProjectMilestone.project_id == up.project_id,
+            )
+            .all()
+        )
+        milestones_dict = {row.milestone_id: row.status for row in ms_rows}
+        completed_ms = [mid for mid, status in milestones_dict.items() if status == 'completed']
+        current_projects.append({
+            'projectId': up.project_id,
+            'startedAt': up.started_at,
+            'progress': up.progress or 0,
+            'milestones': milestones_dict,
+            'completedMilestones': completed_ms,
+        })
+
+    # achievements
+    achievements = [
+        row.achievement_id
+        for row in db.query(UserAchievement)
+        .filter(UserAchievement.user_id == user.id)
+        .all()
+    ]
+
+    return {
+        'id': user.id,
+        'name': user.name,
+        'email': user.email,
+        'profileImage': user.profile_image or '',
+        'degree': user.degree or '',
+        'branch': user.branch_id or '',           # frontend uses 'branch'
+        'semester': user.semester or '',
+        'skillLevel': user.skill_level or 'beginner',
+        'interestedDomains': _parse(user.interested_domains),
+        'goals': _parse(user.goals),
+        'completedProjects': completed_projects,
+        'currentProjects': current_projects,
+        'xp': user.xp or 0,
+        'achievements': achievements,
+        'onboardingComplete': bool(user.onboarding_complete),
+        'activeDays': _parse(user.active_days),
+        'copilotUsed': bool(user.copilot_used),
+        'createdAt': user.created_at,
+        'updatedAt': user.updated_at,
+    }
+
+
+# ── Routes ─────────────────────────────────────────────────────────────────────
 
 @auth_bp.route('/register', methods=['POST'])
 @rate_limit('auth')
@@ -23,7 +120,6 @@ def register():
     password = data.get('password', '')
     confirm_password = data.get('confirmPassword', '')
 
-    # Validation
     if not name or len(name) < 2:
         return jsonify({'error': 'Name must be at least 2 characters'}), 400
     if not validate_email(email):
@@ -33,47 +129,40 @@ def register():
     if password != confirm_password:
         return jsonify({'error': 'Passwords do not match'}), 400
 
-    users = read_json('users.json')
-
-    # Check existing
-    if any(u['email'] == email for u in users):
-        return jsonify({'error': 'Email already registered'}), 409
-
-    # Hash password with bcrypt
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    now = now_iso()
 
-    user = {
-        'id': generate_id(),
-        'name': name,
-        'email': email,
-        'password': hashed,
-        'profileImage': '',
-        'degree': '',
-        'branch': '',
-        'semester': '',
-        'skillLevel': 'beginner',
-        'interestedDomains': [],
-        'goals': [],
-        'completedProjects': [],
-        'currentProjects': [],
-        'xp': 0,
-        'achievements': [],
-        'onboardingComplete': False,
-        'activeDays': [],
-        'copilotUsed': False,
-        'createdAt': now_iso(),
-        'updatedAt': now_iso()
-    }
+    with get_db() as db:
+        existing = db.query(User).filter(User.email == email).first()
+        if existing:
+            return jsonify({'error': 'Email already registered'}), 409
 
-    users.append(user)
-    write_json('users.json', users)
+        user = User(
+            id=generate_id(),
+            name=name,
+            email=email,
+            password_hash=hashed,
+            profile_image='',
+            degree='',
+            branch_id=None,   # FK to branches.id — NULL until user sets it
+            semester='',
+            skill_level='beginner',
+            interested_domains='[]',
+            goals='[]',
+            xp=0,
+            onboarding_complete=0,
+            active_days='[]',
+            copilot_used=0,
+            created_at=now,
+            updated_at=now,
+        )
+        db.add(user)
+        db.flush()
+        safe = _safe_user(user, db)
+        uid = user.id
 
-    # Create JWT token
-    token = create_access_token(identity=user['id'])
-    resp = jsonify({
-        'message': 'Registration successful',
-        'user': _safe_user(user)
-    })
+    token = create_access_token(identity=uid)
+    resp = jsonify({'message': 'Registration successful', 'user': safe})
     set_access_cookies(resp, token)
     return resp, 201
 
@@ -91,20 +180,18 @@ def login():
     if not email or not password:
         return jsonify({'error': 'Email and password required'}), 400
 
-    users = read_json('users.json')
-    user = next((u for u in users if u['email'] == email), None)
+    with get_db() as db:
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            return jsonify({'error': 'Invalid email or password'}), 401
+        if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
+            return jsonify({'error': 'Invalid email or password'}), 401
 
-    if not user:
-        return jsonify({'error': 'Invalid email or password'}), 401
+        safe = _safe_user(user, db)
+        uid = user.id
 
-    if not bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
-        return jsonify({'error': 'Invalid email or password'}), 401
-
-    token = create_access_token(identity=user['id'])
-    resp = jsonify({
-        'message': 'Login successful',
-        'user': _safe_user(user)
-    })
+    token = create_access_token(identity=uid)
+    resp = jsonify({'message': 'Login successful', 'user': safe})
     set_access_cookies(resp, token)
     return resp, 200
 
@@ -120,11 +207,12 @@ def logout():
 @jwt_required()
 def get_me():
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user = next((u for u in users if u['id'] == user_id), None)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    return jsonify({'user': _safe_user(user)}), 200
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        safe = _safe_user(user, db)
+    return jsonify({'user': safe}), 200
 
 
 @auth_bp.route('/profile', methods=['PUT'])
@@ -135,33 +223,39 @@ def update_profile():
     if not data:
         return jsonify({'error': 'Request body required'}), 400
 
-    users = read_json('users.json')
-    user_idx = next((i for i, u in enumerate(users) if u['id'] == user_id), None)
-    if user_idx is None:
-        return jsonify({'error': 'User not found'}), 404
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    user = users[user_idx]
+        # Whitelist — match old field names the frontend sends
+        field_map = {
+            'name': ('name', str),
+            'profileImage': ('profile_image', str),
+            'degree': ('degree', str),
+            'branch': ('branch_id', str),          # frontend sends 'branch'
+            'semester': ('semester', str),
+            'skillLevel': ('skill_level', str),
+            'interestedDomains': ('interested_domains', list),
+            'goals': ('goals', list),
+            'onboardingComplete': ('onboarding_complete', bool),
+        }
+        for frontend_key, (db_col, expected_type) in field_map.items():
+            if frontend_key in data:
+                val = data[frontend_key]
+                if expected_type == str:
+                    val = sanitize_string(val) if isinstance(val, str) else val
+                    # branch_id is a FK — treat empty string as NULL
+                    if db_col == 'branch_id' and val == '':
+                        val = None
+                elif expected_type == list:
+                    val = json.dumps(val, ensure_ascii=False) if isinstance(val, list) else val
+                elif expected_type == bool:
+                    val = int(bool(val))
+                setattr(user, db_col, val)
 
-    # Whitelist allowed fields (prevent mass assignment)
-    allowed_fields = [
-        'name', 'profileImage', 'degree', 'branch', 'semester',
-        'skillLevel', 'interestedDomains', 'goals', 'onboardingComplete'
-    ]
-    for field in allowed_fields:
-        if field in data:
-            if isinstance(data[field], str):
-                user[field] = sanitize_string(data[field])
-            else:
-                user[field] = data[field]
+        user.updated_at = now_iso()
+        db.flush()
+        safe = _safe_user(user, db)
 
-    user['updatedAt'] = now_iso()
-    users[user_idx] = user
-    write_json('users.json', users)
-
-    return jsonify({'message': 'Profile updated', 'user': _safe_user(user)}), 200
-
-
-def _safe_user(user):
-    """Return user dict without sensitive fields."""
-    safe = {k: v for k, v in user.items() if k != 'password'}
-    return safe
+    return jsonify({'message': 'Profile updated', 'user': safe}), 200

@@ -1,59 +1,73 @@
-"""Leaderboard routes: global, branch, domain, weekly, all-time rankings."""
+"""Leaderboard routes: global, branch, domain rankings — reads from SQLite."""
 from flask import Blueprint, request, jsonify
-from utils.helpers import read_json, get_user_level
+
+from database import get_db, get_user_level_from_db
+from models import User, UserProject
 
 leaderboard_bp = Blueprint('leaderboard', __name__)
 
 
 @leaderboard_bp.route('', methods=['GET'])
 def get_leaderboard():
-    """Get rankings with optional filters."""
-    ranking_type = request.args.get('type', 'global')  # global, branch, domain, weekly
+    """Get rankings with optional filters (type, branch, domain)."""
+    ranking_type = request.args.get('type', 'global')
     branch = request.args.get('branch', '')
     domain = request.args.get('domain', '')
 
-    users = read_json('users.json')
-    xp_rules = read_json('xp_rules.json')
+    with get_db() as db:
+        # Fetch all users with XP > 0
+        q = db.query(User).filter(User.xp > 0)
 
-    # Build leaderboard entries
-    entries = []
-    for user in users:
-        if user.get('xp', 0) == 0:
-            continue
-
-        # Apply filters
         if ranking_type == 'branch' and branch:
-            if user.get('branch', '') != branch:
-                continue
-        elif ranking_type == 'domain' and domain:
-            # Filter users who have completed projects in this domain
-            projects = read_json('projects.json')
-            completed_ids = user.get('completedProjects', [])
-            domain_projects = [p for p in projects if p['id'] in completed_ids and p.get('domain') == domain]
-            if not domain_projects:
-                continue
+            q = q.filter(User.branch_id == branch)
 
-        level_info = get_user_level(user.get('xp', 0), xp_rules)
-        entries.append({
-            'userId': user['id'],
-            'name': user.get('name', 'Anonymous'),
-            'xp': user.get('xp', 0),
-            'level': level_info.get('level', 1),
-            'levelName': level_info.get('name', 'Explorer'),
-            'completedProjects': len(user.get('completedProjects', [])),
-            'branch': user.get('branch', ''),
-            'profileImage': user.get('profileImage', '')
-        })
+        users = q.all()
 
-    # Sort by XP descending
+        # For domain filter we need to check completed projects in that domain
+        if ranking_type == 'domain' and domain:
+            from models import Project
+            filtered = []
+            for u in users:
+                has_domain_project = (
+                    db.query(UserProject)
+                    .join(Project, Project.id == UserProject.project_id)
+                    .filter(
+                        UserProject.user_id == u.id,
+                        UserProject.status == 'completed',
+                        Project.domain_id == domain,
+                    )
+                    .first()
+                )
+                if has_domain_project:
+                    filtered.append(u)
+            users = filtered
+
+        entries = []
+        for u in users:
+            level_info = get_user_level_from_db(u.xp, db)
+            completed_count = (
+                db.query(UserProject)
+                .filter(UserProject.user_id == u.id, UserProject.status == 'completed')
+                .count()
+            )
+            entries.append({
+                'userId': u.id,
+                'name': u.name,
+                'xp': u.xp,
+                'level': level_info['level'],
+                'levelName': level_info['name'],
+                'completedProjects': completed_count,
+                'branch': u.branch_id or '',
+                'profileImage': u.profile_image or '',
+            })
+
+    # Sort by XP descending, add rank
     entries.sort(key=lambda e: e['xp'], reverse=True)
-
-    # Add rank
     for i, entry in enumerate(entries):
         entry['rank'] = i + 1
 
     return jsonify({
-        'leaderboard': entries[:50],  # Top 50
+        'leaderboard': entries[:50],
         'type': ranking_type,
-        'total': len(entries)
+        'total': len(entries),
     }), 200

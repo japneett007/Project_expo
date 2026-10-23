@@ -1,47 +1,65 @@
-"""Achievements routes: list achievements, check unlocks, XP summary."""
+import json
+
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils.helpers import read_json, write_json, get_user_level, now_iso
+
+from database import get_db
+from models import Achievement, User, UserAchievement, UserProject, XpLevel
+from utils.helpers import now_iso
 
 achievements_bp = Blueprint('achievements', __name__)
 
+
+# ── Serialisers ────────────────────────────────────────────────────────────────
+
+def _ach_to_dict(ach, unlocked=False):
+    return ach.to_dict(unlocked=unlocked)
+
+
+# ── Routes ─────────────────────────────────────────────────────────────────────
 
 @achievements_bp.route('', methods=['GET'])
 @jwt_required()
 def get_achievements():
     """Get all achievements with unlock status for current user."""
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user = next((u for u in users if u['id'] == user_id), None)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
 
-    all_achievements = read_json('achievements.json')
-    user_achievements = user.get('achievements', [])
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    # Check and unlock new achievements
-    newly_unlocked = []
-    for ach in all_achievements:
-        ach['unlocked'] = ach['id'] in user_achievements
-        if not ach['unlocked']:
-            if _check_criteria(ach, user):
-                ach['unlocked'] = True
-                newly_unlocked.append(ach['id'])
+        all_achievements = db.query(Achievement).order_by(Achievement.name).all()
 
-    # Save newly unlocked achievements
-    if newly_unlocked:
-        user_idx = next((i for i, u in enumerate(users) if u['id'] == user_id), None)
-        if user_idx is not None:
-            users[user_idx]['achievements'] = user_achievements + newly_unlocked
-            # Award achievement XP
-            for ach_id in newly_unlocked:
-                ach_data = next((a for a in all_achievements if a['id'] == ach_id), None)
-                if ach_data:
-                    users[user_idx]['xp'] = users[user_idx].get('xp', 0) + ach_data.get('xpReward', 0)
-            users[user_idx]['updatedAt'] = now_iso()
-            write_json('users.json', users)
+        # IDs already unlocked
+        unlocked_ids = {
+            ua.achievement_id
+            for ua in db.query(UserAchievement)
+            .filter(UserAchievement.user_id == user_id)
+            .all()
+        }
 
-    return jsonify({'achievements': all_achievements, 'newlyUnlocked': newly_unlocked}), 200
+        # Check for new unlocks
+        newly_unlocked = []
+        for ach in all_achievements:
+            if ach.id not in unlocked_ids and _check_criteria(ach, user, db):
+                unlocked_ids.add(ach.id)
+                newly_unlocked.append(ach.id)
+                # Record in DB
+                db.add(UserAchievement(
+                    user_id=user_id,
+                    achievement_id=ach.id,
+                    unlocked_at=now_iso(),
+                ))
+                # Award XP
+                user.xp = (user.xp or 0) + ach.xp_reward
+
+        if newly_unlocked:
+            user.updated_at = now_iso()
+
+        result = [_ach_to_dict(a, a.id in unlocked_ids) for a in all_achievements]
+
+    return jsonify({'achievements': result, 'newlyUnlocked': newly_unlocked}), 200
 
 
 @achievements_bp.route('/xp', methods=['GET'])
@@ -49,75 +67,128 @@ def get_achievements():
 def xp_summary():
     """Get XP summary, level, and progress to next level."""
     user_id = get_jwt_identity()
-    users = read_json('users.json')
-    user = next((u for u in users if u['id'] == user_id), None)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
 
-    xp = user.get('xp', 0)
-    xp_rules = read_json('xp_rules.json')
-    current_level = get_user_level(xp, xp_rules)
-    levels = xp_rules.get('levels', [])
+    with get_db() as db:
+        user = db.get(User, user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    # Find next level
-    next_level = None
-    for lvl in levels:
-        if lvl['minXP'] > xp:
-            next_level = lvl
-            break
+        xp = user.xp or 0
+        levels = db.query(XpLevel).order_by(XpLevel.level).all()
 
-    progress_to_next = 0
-    if next_level and current_level:
-        range_xp = next_level['minXP'] - current_level['minXP']
-        progress_xp = xp - current_level['minXP']
-        progress_to_next = round((progress_xp / range_xp * 100), 1) if range_xp > 0 else 100
+        current_level = {'level': 1, 'name': 'Explorer', 'minXP': 0}
+        next_level = None
+        for lvl in levels:
+            if xp >= lvl.min_xp:
+                current_level = {'level': lvl.level, 'name': lvl.name, 'minXP': lvl.min_xp}
+            elif next_level is None:
+                next_level = {'level': lvl.level, 'name': lvl.name, 'minXP': lvl.min_xp}
+
+        progress_to_next = 0
+        if next_level:
+            range_xp = next_level['minXP'] - current_level['minXP']
+            progress_xp = xp - current_level['minXP']
+            progress_to_next = round((progress_xp / range_xp * 100), 1) if range_xp > 0 else 100
+
+        completed = (
+            db.query(UserProject)
+            .filter(UserProject.user_id == user_id, UserProject.status == 'completed')
+            .count()
+        )
+        current = (
+            db.query(UserProject)
+            .filter(UserProject.user_id == user_id, UserProject.status == 'active')
+            .count()
+        )
 
     return jsonify({
         'xp': xp,
         'level': current_level,
         'nextLevel': next_level,
         'progressToNext': progress_to_next,
-        'completedProjects': len(user.get('completedProjects', [])),
-        'currentProjects': len(user.get('currentProjects', []))
+        'completedProjects': completed,
+        'currentProjects': current,
     }), 200
 
 
-def _check_criteria(achievement, user):
-    """Check if user meets achievement criteria."""
-    criteria = achievement.get('criteria', {})
+# ── Criteria checker ───────────────────────────────────────────────────────────
+
+def _check_criteria(achievement, user, db):
+    """Return True if the user meets the achievement's unlock criteria."""
+    try:
+        criteria = json.loads(achievement.criteria) if isinstance(achievement.criteria, str) else {}
+    except (ValueError, TypeError):
+        criteria = {}
+
     ctype = criteria.get('type', '')
     count = criteria.get('count', 0)
 
     if ctype == 'projects_completed':
-        return len(user.get('completedProjects', [])) >= count
+        completed = (
+            db.query(UserProject)
+            .filter(UserProject.user_id == user.id, UserProject.status == 'completed')
+            .count()
+        )
+        return completed >= count
+
     elif ctype == 'debug_milestones':
-        # Simplified: count total completed milestones
-        total_milestones = sum(
-            len(cp.get('completedMilestones', []))
-            for cp in user.get('currentProjects', [])
-        ) + sum(1 for _ in user.get('completedProjects', []))  # Approximate
-        return total_milestones >= count
+        from models import UserProjectMilestone
+        total_ms = (
+            db.query(UserProjectMilestone)
+            .filter(
+                UserProjectMilestone.user_id == user.id,
+                UserProjectMilestone.status == 'completed',
+            )
+            .count()
+        )
+        return total_ms >= count
+
     elif ctype == 'active_days':
-        return len(user.get('activeDays', [])) >= count
+        import json as _json
+        try:
+            days = _json.loads(user.active_days) if isinstance(user.active_days, str) else []
+        except (ValueError, TypeError):
+            days = []
+        return len(days) >= count
+
     elif ctype == 'copilot_used':
-        return user.get('copilotUsed', False)
+        return bool(user.copilot_used)
+
     elif ctype == 'domain_projects':
-        # Check if 5 projects in any single domain
-        projects = read_json('projects.json')
-        completed_ids = user.get('completedProjects', [])
-        domain_counts = {}
-        for pid in completed_ids:
-            proj = next((p for p in projects if p['id'] == pid), None)
-            if proj:
-                domain = proj.get('domain', '')
-                domain_counts[domain] = domain_counts.get(domain, 0) + 1
-        return any(c >= count for c in domain_counts.values())
-    elif ctype == 'fullstack_projects':
-        return len(user.get('completedProjects', [])) >= count
-    elif ctype == 'capstone_completed':
-        projects = read_json('projects.json')
-        completed_ids = user.get('completedProjects', [])
-        capstones = [p for p in projects if p['id'] in completed_ids and p.get('level') == 10]
-        return len(capstones) >= count
+        from models import Project
+        domain_rows = (
+            db.query(Project.domain_id)
+            .join(UserProject, UserProject.project_id == Project.id)
+            .filter(
+                UserProject.user_id == user.id,
+                UserProject.status == 'completed',
+            )
+            .all()
+        )
+        from collections import Counter
+        counts = Counter(r[0] for r in domain_rows)
+        return any(c >= count for c in counts.values())
+
+    elif ctype in ('fullstack_projects', 'capstone_completed'):
+        if ctype == 'fullstack_projects':
+            completed = (
+                db.query(UserProject)
+                .filter(UserProject.user_id == user.id, UserProject.status == 'completed')
+                .count()
+            )
+            return completed >= count
+        else:  # capstone_completed
+            from models import Project
+            capstones = (
+                db.query(UserProject)
+                .join(Project, Project.id == UserProject.project_id)
+                .filter(
+                    UserProject.user_id == user.id,
+                    UserProject.status == 'completed',
+                    Project.level == 10,
+                )
+                .count()
+            )
+            return capstones >= count
 
     return False
